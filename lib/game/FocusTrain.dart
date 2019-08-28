@@ -100,6 +100,9 @@ class _UnitContainerState extends State<UnitContainer> {
       pool.remove(ran);
       this.setState((){}); 
     }
+    if (pool.isEmpty){
+      Navigator.of(context).pop();
+    }
   }
 }
 
