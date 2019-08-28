@@ -24,24 +24,32 @@ class FocusTrainState extends State<FocusTrain> {
   Widget build(BuildContext context) {
     // if (size > 0) {
     return Scaffold(
-        body: Center(
+        body:_UnitContainerInher(
+          source: _getIntPool(),
+          child: Center(
             child: Container(
-      width: 250,
-      height: 250,
-      child: GridView.count(
+            width: 250,
+            height: 250,
+        child: GridView.count(
           physics: NeverScrollableScrollPhysics(),
           mainAxisSpacing: 1,
           crossAxisSpacing: 1,
           crossAxisCount: size,
           children: datasource),
+        ) 
     )));
     //}
   }
 
-  List<UnitContainer> _buildContextList() {
+  List<int> _getIntPool(){
     List<int> pool = List<int>.generate(pow(size, 2), (int index) {
       return index;
     });
+    return pool;
+  }
+
+  List<UnitContainer> _buildContextList() {
+    List<int> pool = _getIntPool(); 
     List<UnitContainer> containers =
         List<UnitContainer>.generate(pow(size, 2), (int index) {
       int ran;
@@ -50,7 +58,7 @@ class FocusTrainState extends State<FocusTrain> {
       } while (!pool.contains(ran));
 
       pool.remove(ran);
-      return UnitContainer(ran + 1);
+      return UnitContainer(ran);
     });
     return containers;
   }
@@ -85,7 +93,29 @@ class _UnitContainerState extends State<UnitContainer> {
   }
 
   void _punchUnit() {
-    visable = false;
-    this.setState((){});
+    _UnitContainerInher inherContainer = _UnitContainerInher.of(context);
+    List <int> pool = inherContainer.source;
+    if(pool.first == ran){
+      visable = false;
+      pool.remove(ran);
+      this.setState((){}); 
+    }
+  }
+}
+
+
+class _UnitContainerInher extends InheritedWidget{
+  static _UnitContainerInher of(BuildContext context) => context.inheritFromWidgetOfExactType(_UnitContainerInher);
+  List<int> source;
+
+  _UnitContainerInher({
+    Key key,
+    @required this.source,
+    @required Widget child
+  }):super(key:key,child:child);
+
+  @override
+  bool updateShouldNotify(_UnitContainerInher oldWidget) {
+    return source != oldWidget.source;
   }
 }
