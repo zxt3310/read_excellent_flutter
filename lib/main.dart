@@ -47,7 +47,7 @@ class MyHomePage extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
             child: Center(
-              child: Text('让孩子爱上阅读\n成为学霸',style: TextStyle(fontSize: 20),),
+              child: Text('让孩子爱上阅读\n成为学霸',style: TextStyle(fontSize: 20),textAlign: TextAlign.center),
             ),
           ),
           Row(
