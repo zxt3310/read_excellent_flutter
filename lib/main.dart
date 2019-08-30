@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:read_excellent/Tools/UIDefine.dart';
 import 'game/FocusTrain.dart';
+import 'game/perception.dart';
 
 void main() {
   // 强制横屏
@@ -76,7 +78,9 @@ class MyHomePage extends StatelessWidget {
                 height: 40,
                 minWidth: 120,
                 shape: RoundedRectangleBorder(borderRadius:BorderRadius.all(Radius.circular(10))),
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => PerceptionTrain(mode: GameMode.modeNormal, content: GameCtx.ctxNum)));
+                },
               ),
               MaterialButton(
                 child: Text('潜能训练'),
