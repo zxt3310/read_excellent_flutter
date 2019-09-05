@@ -22,7 +22,6 @@ class PerceptionTrain extends StatefulWidget {
 class _PerceptionTrainState extends State<PerceptionTrain> {
   final GameMode mode;
   final GameCtx content;
-  BuildContext ctxx;
 
   int lenth;
   Timer _timer;
@@ -30,7 +29,6 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
   _PerceptionTrainState(this.mode, this.content);
   @override
   Widget build(BuildContext context) {
-    ctxx = context;
     lenth = Random.secure().nextInt(8) + 4;
     return Scaffold(
         backgroundColor: Colors.blueAccent,
@@ -52,11 +50,13 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
           return Random.secure().nextInt(89) + 10;
           break;
         case GameCtx.ctxStr:
+          return '哈喽';
           break;
         case GameCtx.ctxGraphic:
           break;
         default:
       }
+      return null;
     });
 
     return List.generate(lenth, (int idx) {
@@ -80,9 +80,9 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
 
   @override
   void dispose() {
-    super.dispose();
     _timer.cancel();
-    eventBus.destroy();
+    subscription.cancel();
+    super.dispose();
   }
 
   void startCount(GameMode curMode) {
@@ -95,26 +95,25 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
           barrierDismissible: false,
           context: context,
           builder: (BuildContext ctx) {
-            return _QuestAnswer(lenth);
+            return _QuestAnswer(lenth, ctx);
           });
     };
 
     _timer = Timer.periodic(second, callBack);
   }
 
+  StreamSubscription subscription;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     startCount(mode);
-    eventBus.on<CustomEvent>().listen((event){
-      setState((){});
+    subscription = eventBus.on<CustomEvent>().listen((event) {
+      setState(() {});
     });
   }
 
   @override
   void setState(fn) {
-    // TODO: implement setState
     super.setState(fn);
     startCount(mode);
   }
@@ -137,16 +136,18 @@ class ShareInherit extends InheritedWidget {
 
 class _QuestAnswer extends StatefulWidget {
   final int answer;
-  _QuestAnswer(this.answer);
+  final BuildContext ctxx;
+  _QuestAnswer(this.answer, this.ctxx);
   @override
-  _QuestAnswerState createState() => _QuestAnswerState(answer);
+  _QuestAnswerState createState() => _QuestAnswerState(answer, ctxx);
 }
 
 class _QuestAnswerState extends State<_QuestAnswer> {
   final int answer;
+  final BuildContext ctxx;
 
   List childrens;
-  _QuestAnswerState(this.answer);
+  _QuestAnswerState(this.answer, this.ctxx);
 
   int groupValue;
   @override
@@ -154,10 +155,31 @@ class _QuestAnswerState extends State<_QuestAnswer> {
     return Center(
       child: Dialog(
           child: Column(children: <Widget>[
-        Text('请选择数字的个数', style: TextStyle(fontSize: 16)),
+        SizedBox(height: 50),
+        Text('请选择数字的个数', style: TextStyle(fontSize: 20)),
+        SizedBox(height: 30),
         Row(
-          //crossAxisAlignment: CrossAxisAlignment.center,
           children: _getOptions(),
+        ),
+        Expanded(
+          child: Stack(children: [
+            Align(
+                alignment: Alignment(0.8, 0.6),
+                child: FlatButton(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(Icons.backspace),
+                      SizedBox(width: 10),
+                      Text('退出训练', style: TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(ctxx).pop();
+                  },
+                ))
+          ]),
         )
       ])),
     );
@@ -166,10 +188,12 @@ class _QuestAnswerState extends State<_QuestAnswer> {
   List _getEnumAry() {
     List source;
     do {
-      source = List.generate(4, (int idx) {
-        return Random.secure().nextInt(8) + 4;
-      });
-    } while (!source.contains(answer));
+      do {
+        source = List.generate(4, (int idx) {
+          return Random.secure().nextInt(8) + 4;
+        });
+      } while (!source.contains(answer));
+    } while (Set.from(source).length < 4);
     return source;
   }
 
@@ -203,8 +227,8 @@ class _QuestAnswerState extends State<_QuestAnswer> {
     super.didChangeDependencies();
   }
 }
+
 //通知
 class CustomEvent {
   CustomEvent();
 }
-
