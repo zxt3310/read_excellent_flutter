@@ -72,7 +72,7 @@ class MyHomePage extends StatelessWidget {
                 minWidth: 120,
                 shape: RoundedRectangleBorder(borderRadius:BorderRadius.all(Radius.circular(10))),
                 onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Vision()));
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Vision(path: GamePath.pathN)));
                 },
               ),
               MaterialButton(

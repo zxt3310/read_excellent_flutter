@@ -11,3 +11,11 @@ enum GameCtx {
   ctxStr,     //文字
   ctxGraphic      //图形
 }
+
+enum GamePath {
+  pathN,
+  pathZ,
+  pathO,
+  pathX,
+  pathW
+}
