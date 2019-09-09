@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:read_excellent/Tools/UIDefine.dart';
@@ -11,7 +12,7 @@ class Vision extends StatefulWidget {
   final GameMode mode;
   Vision({this.path, this.mode});
   @override
-  _VisionState createState() => _VisionState(path,mode);
+  _VisionState createState() => _VisionState(path, mode);
 }
 
 class _VisionState extends State<Vision> {
@@ -19,7 +20,14 @@ class _VisionState extends State<Vision> {
   final GameMode mode;
   int cout = 7;
   Timer _timer;
-  _VisionState(this.path,this.mode);
+  //答案
+  int answer = 0;
+  //目标图形
+  Widget target;
+
+  List<Icon>datalists;
+
+  _VisionState(this.path, this.mode);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,16 +45,34 @@ class _VisionState extends State<Vision> {
   }
 
   List<Widget> _dataSource() {
-    if (path != GamePath.pathX) {
-      return List<Widget>.generate(8, (int idx) {
-        double x = -0.75 + idx ~/ 2 * 0.5;
-        double y = (idx % 2 == 0) ? -0.75 : 0.75;
-        return Align(
-            child: _UnitView(icon: Icon(Icons.add_alarm), index: idx),
-            alignment: Alignment(x, y));
-      });
+    List<Icon> pics = [
+      Icon(Icons.account_balance_wallet),
+      Icon(Icons.add_photo_alternate),
+      Icon(Icons.airline_seat_legroom_reduced),
+      Icon(Icons.battery_charging_full)
+    ];
+    datalists = List.generate(8, (int index) {
+      return pics[Random.secure().nextInt(pics.length - 1)];
+    });
+    target = datalists[Random.secure().nextInt(7)];
+    answer = 0;
+    for (Icon obj in datalists) {
+      if (obj == target) {
+        answer++;
+      }
     }
-    return null;
+
+    // if (path != GamePath.pathX) {
+    return List<Widget>.generate(8, (int idx) {
+      double x = -0.75 + idx ~/ 2 * 0.5;
+      double y = (idx % 2 == 0) ? -0.75 : 0.75;
+
+      return Align(
+          child: _UnitView(icon: datalists[idx], index: idx),
+          alignment: Alignment(x, y));
+    });
+    // }
+    // return null;
   }
 
   @override
@@ -55,17 +81,48 @@ class _VisionState extends State<Vision> {
     _startGame();
   }
 
-  void _startGame(){
-    var callBack = (Timer timer){
-      if(cout < 0){
+  StreamSubscription subscription;
+
+  @override
+  void initState() {
+    subscription = eventBus.on<ResetNotify>().listen((evnet) {
+      this.setState(() {
+        cout = 7;
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void setState(fn) {
+    super.setState(fn);
+    _startGame();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    subscription.cancel();
+    super.dispose();
+  }
+
+  void _startGame() {
+    var callBack = (Timer timer) {
+      if (cout < -1) {
         timer.cancel();
-      }else{
-        eventBus.fire(FreshEvent(7-cout));
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext ctx) {
+              return _QuestAnswer(answer, context, target);
+            });
+      } else {
+        eventBus.fire(FreshEvent((7 - cout),datalists));
         cout -= 1;
       }
     };
 
-    var oneSec = Duration(seconds: 1);
+    var oneSec = Duration(milliseconds: 1000);
     _timer = Timer.periodic(oneSec, callBack);
   }
 }
@@ -79,7 +136,7 @@ class _UnitView extends StatefulWidget {
 }
 
 class _UnitViewState extends State<_UnitView> {
-  final Icon icon;
+  Icon icon;
   final int index;
   bool hide = true;
   _UnitViewState(this.icon, this.index);
@@ -100,9 +157,11 @@ class _UnitViewState extends State<_UnitView> {
   StreamSubscription subscription;
   @override
   void initState() {
+
     subscription = eventBus.on<FreshEvent>().listen((event) {
       setState(() {
-        hide = event.current == index?false:true;
+        hide = event.current == index ? false : true;
+        icon = event.datalist[index];
       });
     });
     super.initState();
@@ -115,8 +174,117 @@ class _UnitViewState extends State<_UnitView> {
   }
 }
 
+//弹窗
+
+class _QuestAnswer extends StatefulWidget {
+  final int answer;
+  final BuildContext ctxx;
+  final Icon target;
+  _QuestAnswer(this.answer, this.ctxx, this.target);
+  @override
+  _QuestAnswerState createState() => _QuestAnswerState(answer, ctxx, target);
+}
+
+class _QuestAnswerState extends State<_QuestAnswer> {
+  final int answer;
+  final BuildContext ctxx;
+
+  List childrens;
+  final Icon target;
+  _QuestAnswerState(this.answer, this.ctxx, this.target);
+
+  int groupValue;
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Dialog(
+          child: Column(children: <Widget>[
+        SizedBox(height: 30),
+        target,
+        SizedBox(
+          height: 10,
+        ),
+        Text('请选择上面图形的出现次数', style: TextStyle(fontSize: 20)),
+        SizedBox(height: 30),
+        Row(
+          children: _getOptions(),
+        ),
+        Expanded(
+          child: Stack(children: [
+            Align(
+                alignment: Alignment(0.8, 0.6),
+                child: FlatButton(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(Icons.backspace),
+                      SizedBox(width: 10),
+                      Text('退出训练', style: TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(ctxx).pop();
+                  },
+                ))
+          ]),
+        )
+      ])),
+    );
+  }
+
+  //生成选项内容
+  List _getEnumAry() {
+    List source;
+    do {
+      do {
+        source = List.generate(4, (int idx) {
+          return Random.secure().nextInt(7) + 1;
+        });
+      } while (!source.contains(answer));
+    } while (Set.from(source).length < 4);
+    return source;
+  }
+
+  //四个选项
+  List<Widget> _getOptions() {
+    List<Widget> res = List.generate(4, (int idx) {
+      return Flexible(
+          child: RadioListTile(
+        value: childrens[idx],
+        groupValue: groupValue,
+        title: Text(
+          '${childrens[idx]}',
+          style: TextStyle(fontSize: 14),
+        ),
+        onChanged: (value) {
+          this.setState(() {
+            groupValue = childrens[idx];
+            if (groupValue == answer) {
+              Navigator.of(context).pop();
+              eventBus.fire(ResetNotify());
+            }
+          });
+        },
+      ));
+    });
+    return res;
+  }
+
+  @override
+  void didChangeDependencies() {
+    childrens = _getEnumAry();
+    super.didChangeDependencies();
+  }
+}
+
 //通知
 class FreshEvent {
   int current;
-  FreshEvent(this.current);
+  List <Icon> datalist;
+  FreshEvent(this.current,this.datalist);
+}
+
+class ResetNotify {
+  ResetNotify();
 }
