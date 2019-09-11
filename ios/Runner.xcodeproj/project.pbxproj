@@ -327,6 +327,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.readExcellent;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Profile;
@@ -457,6 +458,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.readExcellent;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -481,6 +483,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.readExcellent;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

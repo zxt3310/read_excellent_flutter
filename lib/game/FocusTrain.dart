@@ -3,6 +3,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 
@@ -37,8 +38,8 @@ class FocusTrainState extends State<FocusTrain> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  width: 250,
-                  height: 250,
+                  width: MediaQuery.of(context).size.height*0.7,
+                  height:MediaQuery.of(context).size.height*0.7 + 25,
                   child: GridView.count(
                       physics: NeverScrollableScrollPhysics(),
                       mainAxisSpacing: 1,
