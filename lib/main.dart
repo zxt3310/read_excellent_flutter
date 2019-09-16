@@ -7,6 +7,7 @@ import 'package:read_excellent/Tools/UIDefine.dart';
 import 'game/FocusTrain.dart';
 import 'game/perception.dart';
 import 'game/visionTrain.dart';
+import 'game/vistaExtent.dart';
 
 void main() {
   // 强制横屏
@@ -23,7 +24,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(),
@@ -62,7 +62,9 @@ class MyHomePage extends StatelessWidget {
                 height: 40,
                 minWidth: 120,
                 shape: RoundedRectangleBorder(borderRadius:BorderRadius.all(Radius.circular(10))),
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => VistaTrain(shape:RectShape.shapeRoundRect)));
+                },
               ),
              
               MaterialButton(

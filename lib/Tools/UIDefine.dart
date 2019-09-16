@@ -19,3 +19,8 @@ enum GamePath {
   pathX,
   pathW
 }
+
+enum RectShape {
+  shapeCycle,
+  shapeRoundRect
+}

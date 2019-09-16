@@ -24,7 +24,6 @@ class _VisionState extends State<Vision> {
   int answer = 0;
   //目标图形
   Widget target;
-
   List<Icon>datalists;
 
   _VisionState(this.path, this.mode);
@@ -33,7 +32,7 @@ class _VisionState extends State<Vision> {
     return Scaffold(
       backgroundColor: Colors.blueAccent,
       body: Padding(
-        padding: EdgeInsets.all(30),
+        padding: const EdgeInsets.all(30),
         child: Container(
           color: Colors.yellowAccent,
           child: Stack(
@@ -61,7 +60,6 @@ class _VisionState extends State<Vision> {
         answer++;
       }
     }
-
     // if (path != GamePath.pathX) {
     return List<Widget>.generate(8, (int idx) {
       double x = -0.75 + idx ~/ 2 * 0.5;
@@ -205,7 +203,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
           height: 10,
         ),
         Text('请选择上面图形的出现次数', style: TextStyle(fontSize: 20)),
-        SizedBox(height: 30),
+        SizedBox(height: 30), 
         Row(
           children: _getOptions(),
         ),
