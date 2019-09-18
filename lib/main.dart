@@ -12,10 +12,12 @@ import 'game/visionTrain.dart';
 import 'game/vistaExtent.dart';
 
 EventBus eventBus = EventBus();
-const List menu = [['数字舒尔特表格训练','文字舒尔特表格训练'],
-                   ['数字感知训练','中文感知训练','第一图形感知训练','多图形感知训练'],
-                   ['矩形扩展训练','圆形扩展训练','数字扩展训练','文字扩展训练'],
-                   ['圆形移动训练','之字形移动训练','N字形移动训练']];
+const List menu = [
+  ['数字舒尔特表格训练', '文字舒尔特表格训练'],
+  ['数字感知训练', '中文感知训练', '第一图形感知训练', '多图形感知训练'],
+  ['矩形扩展训练', '圆形扩展训练', '数字扩展训练', '文字扩展训练'],
+  ['圆形移动训练', '之字形移动训练', 'N字形移动训练']
+];
 
 void main() {
   // 强制横屏
@@ -182,13 +184,12 @@ class HomeView extends StatelessWidget {
                       children: <Widget>[
                         Container(
                           color: Colors.blueAccent,
-                          width:  MediaQuery.of(context).size.width / 3,
+                          width: MediaQuery.of(context).size.width / 3,
                           height: MediaQuery.of(context).size.height / 1.5,
                         ),
                         Expanded(
                           child: Container(
                             color: Colors.grey,
-                  
                           ),
                         )
                       ],
@@ -216,11 +217,11 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width / 7,
+      width: MediaQuery.of(context).size.width / 6.5,
       child: Column(
         children: <Widget>[
           MaterialButton(
-            minWidth: MediaQuery.of(context).size.width / 7,
+            minWidth: MediaQuery.of(context).size.width / 6.5,
             padding: EdgeInsets.all(12),
             color: Colors.deepOrange,
             child: Text('${widget.title}',
@@ -235,29 +236,28 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
               child: Offstage(
                 offstage: hide,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  //children: getChildren(),
-                  children: getChildren()
-                ),
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    //children: getChildren(),
+                    children: getChildren()),
               ))
         ],
       ),
     );
   }
 
-  List <Widget> getChildren(){
+  List<Widget> getChildren() {
     List temp = menu[widget.idx];
-    return List.generate(temp.length , (index){
+    return List.generate(temp.length, (index) {
       return Padding(
-        padding: EdgeInsets.all(5),
-        child: FlatButton(
-          color: Colors.white,
-          padding: EdgeInsets.all(5),
-          child: Text('${temp[index]}',style: TextStyle(fontSize: 14),textAlign: TextAlign.center),
-        ) // Text('${temp[index]}',style: TextStyle(fontSize: 14),textAlign: TextAlign.center)
-      );
+          padding: EdgeInsets.all(0),
+          child: FlatButton(
+            child: Text('${temp[index]}',
+                style: TextStyle(fontSize: 14), textAlign: TextAlign.center),
+            onPressed: () {},
+          ) // Text('${temp[index]}',style : TextStyle(fontSize: 14),textAlign: TextAlign.center)
+          );
     });
-  } 
+  }
 
   void _btnPress() {
     eventBus.fire(SuperSelEvent(widget.idx));
@@ -280,11 +280,6 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
   }
 }
 
-class SuperSelEvent {
-  int curidx;
-  SuperSelEvent(this.curidx);
-}
-
 class _ShareInherit extends InheritedWidget {
   _ShareInherit({Key key, this.child}) : super(key: key, child: child);
 
@@ -301,4 +296,32 @@ class _ShareInherit extends InheritedWidget {
   bool updateShouldNotify(_ShareInherit oldWidget) {
     return true;
   }
+}
+
+class ChildGameSel extends StatefulWidget {
+  final int superIdx;
+  final int childIdx;
+  ChildGameSel({this.superIdx, this.childIdx});
+  @override
+  _ChildGameSelState createState() => _ChildGameSelState();
+}
+
+class _ChildGameSelState extends State<ChildGameSel> {
+  bool pressed = false;
+  @override
+  Widget build(BuildContext context) {
+    List temp = menu[widget.superIdx];
+    return FlatButton(
+      child: Text('${temp[widget.childIdx]}',
+          style: TextStyle(fontSize: 14), textAlign: TextAlign.center),
+          textColor: pressed?Colors.red:Colors.black,
+      onPressed: () {},
+    ); // Text('${temp[
+  }
+}
+
+
+class SuperSelEvent {
+  int curidx;
+  SuperSelEvent(this.curidx);
 }
