@@ -146,8 +146,8 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _ShareInherit(
-      child: Container(
-        child: Row(
+      child: Scaffold(
+        body: Row(
           children: <Widget>[
             Container(
               width: MediaQuery.of(context).size.width / 4,
@@ -175,26 +175,27 @@ class HomeView extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: Container(
-                  color: Colors.blueGrey,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(50, 60, 50, 30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Container(
-                          color: Colors.blueAccent,
-                          width: MediaQuery.of(context).size.width / 3,
-                          height: MediaQuery.of(context).size.height / 1.5,
-                        ),
-                        Expanded(
-                          child: Container(
-                            color: Colors.grey,
-                          ),
-                        )
-                      ],
-                    ),
-                  )),
+              // child: Container(
+              //     color: Colors.blueGrey,
+              //     child: Padding(
+              //       padding: const EdgeInsets.fromLTRB(50, 60, 50, 30),
+              //       child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.stretch,
+              //         children: <Widget>[
+              //           Container(
+              //             color: Colors.blueAccent,
+              //             width: MediaQuery.of(context).size.width / 3,
+              //             height: MediaQuery.of(context).size.height / 1.5,
+              //           ),
+              //           Expanded(
+              //             child: Container(
+              //               color: Colors.grey,
+              //             ),
+              //           )
+              //         ],
+              //       ),
+              //     )),
+              child: GameDetailView(),
             )
           ],
         ),
@@ -250,12 +251,12 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
     return List.generate(temp.length, (index) {
       return Padding(
           padding: EdgeInsets.all(0),
-          child: FlatButton(
-            child: Text('${temp[index]}',
-                style: TextStyle(fontSize: 14), textAlign: TextAlign.center),
-            onPressed: () {},
-          ) // Text('${temp[index]}',style : TextStyle(fontSize: 14),textAlign: TextAlign.center)
-          );
+          // child: FlatButton(
+          //   child: Text('${temp[index]}',
+          //       style: TextStyle(fontSize: 14), textAlign: TextAlign.center),
+          //   onPressed: () {},
+          // )
+          child: ChildGameSel(superIdx: widget.idx, childIdx: index));
     });
   }
 
@@ -280,24 +281,6 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
   }
 }
 
-class _ShareInherit extends InheritedWidget {
-  _ShareInherit({Key key, this.child}) : super(key: key, child: child);
-
-  final Widget child;
-
-  int curIdx;
-
-  static _ShareInherit of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(_ShareInherit)
-        as _ShareInherit);
-  }
-
-  @override
-  bool updateShouldNotify(_ShareInherit oldWidget) {
-    return true;
-  }
-}
-
 class ChildGameSel extends StatefulWidget {
   final int superIdx;
   final int childIdx;
@@ -314,14 +297,368 @@ class _ChildGameSelState extends State<ChildGameSel> {
     return FlatButton(
       child: Text('${temp[widget.childIdx]}',
           style: TextStyle(fontSize: 14), textAlign: TextAlign.center),
-          textColor: pressed?Colors.red:Colors.black,
-      onPressed: () {},
+      textColor: pressed ? Colors.red : Colors.black,
+      onPressed: () {
+        eventBus.fire(
+            ChildSelEvent(childIdx: widget.childIdx, subIdx: widget.superIdx));
+        _ShareInherit.of(context).superIdx = widget.superIdx;
+        _ShareInherit.of(context).childIdx = widget.childIdx;
+      },
     ); // Text('${temp[
+  }
+
+  StreamSubscription subscription;
+
+  @override
+  void initState() {
+    super.initState();
+    subscription = eventBus.on<ChildSelEvent>().listen((event) {
+      pressed =
+          (event.subIdx == widget.superIdx && event.childIdx == widget.childIdx)
+              ? true
+              : false;
+      this.setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 }
 
+class GameDetailView extends StatefulWidget {
+  @override
+  _GameDetailViewState createState() => _GameDetailViewState();
+}
 
+class _GameDetailViewState extends State<GameDetailView> {
+  int superIdx = -1;
+  int childIdx = -1;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Container(
+          color: Colors.blueGrey,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(50, 60, 50, 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                    color: Colors.blueAccent,
+                    width: MediaQuery.of(context).size.width / 3,
+                    height: MediaQuery.of(context).size.height / 1.5,
+                    child: Center(
+                      child: Container(
+                          child: Text(_scribe(),
+                              style: TextStyle(
+                                  fontSize: 28,
+                                  color: Colors.white,
+                                  decoration: TextDecoration.none))),
+                    )),
+                Expanded(
+                  child: Container(
+                    color: Colors.deepPurpleAccent,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Flexible(
+                          flex: 3,
+                          child: superIdx > 0 ? ModeOption() : FocusOption(),
+                        ),
+                        Expanded(
+                            flex: 2,
+                            child: Container(
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                  MaterialButton(
+                                    color: Colors.orange,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    minWidth: 150,
+                                    height: 49,
+                                    child: Text('start',
+                                        style: TextStyle(fontSize: 18)),
+                                    onPressed: () {},
+                                  )
+                                ])))
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          )),
+    );
+  }
+
+  String _scribe() {
+    return childIdx == -1 ? '欢迎来到训练场' : '${menu[superIdx][childIdx]}';
+  }
+
+  void startGame() {
+    int supIdx = _ShareInherit.of(context).superIdx;
+    int chilIdx = _ShareInherit.of(context).childIdx;
+    GameMode mode = _ShareInherit.of(context).mode;
+    int size = _ShareInherit.of(context).gameSize;
+
+    GameAssistant helper = GameAssistant(
+        childIdx: chilIdx, superIdx: supIdx, mode: mode, gameSize: size);
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => helper.getTargetGame()));
+  }
+
+  StreamSubscription subscription;
+  @override
+  void initState() {
+    super.initState();
+    subscription = eventBus.on<ChildSelEvent>().listen((event) {
+      superIdx = event.subIdx;
+      childIdx = event.childIdx;
+      this.setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
+}
+
+//游戏速度选项
+class ModeOption extends StatefulWidget {
+  @override
+  _ModeOptionState createState() => _ModeOptionState();
+}
+
+class _ModeOptionState extends State<ModeOption> {
+  int groupValue = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        children: <Widget>[
+          Flexible(
+            child: RadioListTile(
+                title: Text('快',
+                    style: TextStyle(fontSize: 14, color: Colors.white)),
+                value: 0,
+                groupValue: groupValue,
+                onChanged: (value) {
+                  changed(value);
+                }),
+          ),
+          Flexible(
+            child: RadioListTile(
+                title: Text('中',
+                    style: TextStyle(fontSize: 14, color: Colors.white)),
+                value: 1,
+                groupValue: groupValue,
+                onChanged: (value) {
+                  changed(value);
+                }),
+          ),
+          Flexible(
+            child: RadioListTile(
+                title: Text('慢',
+                    style: TextStyle(fontSize: 14, color: Colors.white)),
+                value: 2,
+                groupValue: groupValue,
+                onChanged: (value) {
+                  changed(value);
+                }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void changed(value) {
+    groupValue = value;
+    this.setState(() {});
+    _ShareInherit.of(context).mode = GameMode.values[value];
+  }
+}
+
+//专注力训练选项
+class FocusOption extends StatefulWidget {
+  @override
+  _FocusOptionState createState() => _FocusOptionState();
+}
+
+class _FocusOptionState extends State<FocusOption> {
+  int groupValue = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Flexible(
+                child: RadioListTile(
+                    title: Text('3x3',
+                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                    value: 0,
+                    groupValue: groupValue,
+                    onChanged: (value) {
+                      changed(value);
+                    }),
+              ),
+              Flexible(
+                child: RadioListTile(
+                    title: Text('4x4',
+                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                    value: 1,
+                    groupValue: groupValue,
+                    onChanged: (value) {
+                      changed(value);
+                    }),
+              ),
+              Flexible(
+                child: RadioListTile(
+                    title: Text('5x5',
+                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                    value: 2,
+                    groupValue: groupValue,
+                    onChanged: (value) {
+                      changed(value);
+                    }),
+              )
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                child: RadioListTile(
+                    title: Text('6x6',
+                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                    value: 3,
+                    groupValue: groupValue,
+                    onChanged: (value) {
+                      changed(value);
+                    }),
+              ),
+              Flexible(
+                child: RadioListTile(
+                    title: Text('7x7',
+                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                    value: 4,
+                    groupValue: groupValue,
+                    onChanged: (value) {
+                      changed(value);
+                    }),
+              ),
+              Flexible(
+                child: RadioListTile(
+                    title: Text('8x8',
+                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                    value: 5,
+                    groupValue: groupValue,
+                    onChanged: (value) {
+                      changed(value);
+                    }),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  void changed(value) {
+    groupValue = value;
+    this.setState(() {});
+    _ShareInherit.of(context).gameSize = value + 3;
+  }
+}
+
+// 事件类型定义
+// 游戏类型选择 点击事件
 class SuperSelEvent {
+  @required
   int curidx;
   SuperSelEvent(this.curidx);
+}
+
+// 游戏分支选择 点击事件
+class ChildSelEvent {
+  @required
+  int subIdx;
+  @required
+  int childIdx;
+  ChildSelEvent({this.subIdx, this.childIdx});
+}
+
+class ModeRadioEvent {
+  @required
+  int curValue;
+  ModeRadioEvent(this.curValue);
+}
+
+class _ShareInherit extends InheritedWidget {
+  _ShareInherit({Key key, this.child}) : super(key: key, child: child);
+
+  final Widget child;
+
+  int superIdx;
+  int childIdx;
+
+  GameMode mode = GameMode.modeFast;
+  int gameSize = 3;
+
+  static _ShareInherit of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(_ShareInherit)
+        as _ShareInherit);
+  }
+
+  @override
+  bool updateShouldNotify(_ShareInherit oldWidget) {
+    return true;
+  }
+}
+
+//辅助工具类 筛选游戏
+
+class GameAssistant {
+  @required
+  final int superIdx;
+
+  @required
+  final int childIdx;
+
+  final int gameSize;
+  final GameMode mode;
+
+  GameAssistant({this.superIdx, this.childIdx, this.gameSize, this.mode});
+
+  Widget getTargetGame() {
+    Widget wid;
+    switch (superIdx) {
+      case 0:
+        wid = FocusTrain.number(gameSize);
+        break;
+      case 1:
+        wid = PerceptionTrain(mode: mode,content: GameCtx.ctxNum);
+        break;
+      case 2:
+        wid = Vision(path: GamePath.pathN);
+        break;
+      case 3:
+        wid = VistaTrain(shape: RectShape.shapeRoundRect);
+        break;
+      default:
+    }
+
+    return wid;
+  }
 }
