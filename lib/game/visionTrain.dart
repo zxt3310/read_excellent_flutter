@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _VisionState extends State<Vision> {
   int answer = 0;
   //目标图形
   Widget target;
-  List<Icon>datalists;
+  List<Image>datalists;
 
   _VisionState(this.path, this.mode);
   @override
@@ -44,18 +45,26 @@ class _VisionState extends State<Vision> {
   }
 
   List<Widget> _dataSource() {
-    List<Icon> pics = [
-      Icon(Icons.account_balance_wallet),
-      Icon(Icons.add_photo_alternate),
-      Icon(Icons.airline_seat_legroom_reduced),
-      Icon(Icons.battery_charging_full)
+    List<Image> pics = [
+      // Icon(Icons.account_balance_wallet),
+      // Icon(Icons.add_photo_alternate),
+      // Icon(Icons.airline_seat_legroom_reduced),
+      // Icon(Icons.battery_charging_full)
+      Image.asset('images/棒冰.png'),
+      Image.asset('images/爆米花.png'),
+      Image.asset('images/开心果.png'),
+      Image.asset('images/马卡龙.png'),
+      Image.asset('images/热狗.png'),
+      Image.asset('images/寿司.png'),
+      Image.asset('images/甜甜圈.png'),
+      Image.asset('images/饼干.png')
     ];
     datalists = List.generate(8, (int index) {
       return pics[Random.secure().nextInt(pics.length - 1)];
     });
     target = datalists[Random.secure().nextInt(7)];
     answer = 0;
-    for (Icon obj in datalists) {
+    for (Image obj in datalists) {
       if (obj == target) {
         answer++;
       }
@@ -126,7 +135,7 @@ class _VisionState extends State<Vision> {
 }
 
 class _UnitView extends StatefulWidget {
-  final Icon icon;
+  final Image icon;
   final int index;
   _UnitView({this.icon, this.index});
   @override
@@ -134,7 +143,7 @@ class _UnitView extends StatefulWidget {
 }
 
 class _UnitViewState extends State<_UnitView> {
-  Icon icon;
+  Image icon;
   final int index;
   bool hide = true;
   _UnitViewState(this.icon, this.index);
@@ -143,8 +152,8 @@ class _UnitViewState extends State<_UnitView> {
     return Offstage(
       offstage: hide,
       child: Container(
-        width: 30,
-        height: 30,
+        width: 60,
+        height: 60,
         child: Center(
           child: icon,
         ),
@@ -177,7 +186,7 @@ class _UnitViewState extends State<_UnitView> {
 class _QuestAnswer extends StatefulWidget {
   final int answer;
   final BuildContext ctxx;
-  final Icon target;
+  final Image target;
   _QuestAnswer(this.answer, this.ctxx, this.target);
   @override
   _QuestAnswerState createState() => _QuestAnswerState(answer, ctxx, target);
@@ -188,7 +197,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
   final BuildContext ctxx;
 
   List childrens;
-  final Icon target;
+  final Image target;
   _QuestAnswerState(this.answer, this.ctxx, this.target);
 
   int groupValue;
@@ -279,7 +288,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
 //通知
 class FreshEvent {
   int current;
-  List <Icon> datalist;
+  List <Image> datalist;
   FreshEvent(this.current,this.datalist);
 }
 

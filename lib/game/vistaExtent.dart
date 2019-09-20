@@ -4,7 +4,8 @@ import 'package:read_excellent/Tools/UIDefine.dart';
 
 class VistaTrain extends StatelessWidget {
   final RectShape shape;
-  VistaTrain({this.shape});
+  final GameMode mode;
+  VistaTrain({this.shape,this.mode});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -14,7 +15,7 @@ class VistaTrain extends StatelessWidget {
         child: Container(
             color: Colors.yellowAccent,
             child: Center(
-              child: VistaRect(shape),
+              child: VistaRect(shape,mode),
             )),
       ),
     );
@@ -23,7 +24,8 @@ class VistaTrain extends StatelessWidget {
 
 class VistaRect extends StatefulWidget {
   final RectShape shape;
-  VistaRect(this.shape);
+  final GameMode mode;
+  VistaRect(this.shape,this.mode);
   @override
   _VistaRectState createState() => _VistaRectState();
 }
@@ -56,14 +58,14 @@ class _VistaRectState extends State<VistaRect> {
   }
 
   void startVis() {
-    var oneSec = Duration(seconds: 1);
+    var oneSec = Duration(seconds: widget.mode.index + 1);
     var callBack = (timer) {
       if (count == 4) {
         dr = cdr;
         count = 1;
         this.setState((){});
       }else{
-        dr = count * 5 * cdr;
+        dr = count * 8 * cdr;
         count +=1;
         this.setState((){});
       }

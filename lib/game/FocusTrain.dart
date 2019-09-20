@@ -5,30 +5,37 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:read_excellent/Tools/UIDefine.dart';
 
+const List <String> words = ['可','壤','露','央','籍','攀','然','理',
+                    '接','着','落','从','本','心','熟','衡',
+                    '融','甲','乃','与','凝','同','繁','躁',
+                    '国','年','如','十','个','蠡','黯','矗',
+                    '灝','昧','眨','仔','白','题','篇','入',
+                    '卜','点','俪','总','揽','亲','言','覆',
+                    '圭','达','训','各','考','馕','得','颧',
+                    '霾','黯','籍','蹲','麓','徙','瞭','黔'];
 
 class FocusTrain extends StatefulWidget {
   final int size;
-  final List<String> strs;
+  final GameCtx ctx;
 
-  FocusTrain(this.size, this.strs);
-  FocusTrain.number(int x) : this(x, null);
-  FocusTrain.strAry(List<String> ary) : this(null, ary);
+  FocusTrain(this.size, this.ctx);
+  FocusTrain.number(int x,GameCtx ctx) : this(x,ctx);
   @override
-  FocusTrainState createState() => FocusTrainState(size, strs);
+  FocusTrainState createState() => FocusTrainState(size, ctx);
 }
 
 class FocusTrainState extends State<FocusTrain> {
-  int size;
-  List<String> strs;
+  final GameCtx ctx;
+  final int size;
   List<UnitContainer> _datasource;
 
-  FocusTrainState(this.size, this.strs) {
+  FocusTrainState(this.size,this.ctx) {
     _datasource = _buildContextList();
   }
   @override
   Widget build(BuildContext context) {
-    // if (size > 0) {
     return Scaffold(
         body: _UnitContainerInher(
             source: _getIntPool(),
@@ -37,9 +44,10 @@ class FocusTrainState extends State<FocusTrain> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+
                 Container(
-                  width: MediaQuery.of(context).size.height*0.7,
-                  height:MediaQuery.of(context).size.height*0.7 + 25,
+                  width: MediaQuery.of(context).size.height * 0.7,
+                  height: MediaQuery.of(context).size.height * 0.7 + 25,
                   child: GridView.count(
                       physics: NeverScrollableScrollPhysics(),
                       mainAxisSpacing: 1,
@@ -51,12 +59,19 @@ class FocusTrainState extends State<FocusTrain> {
                 CountDownTimer(90)
               ],
             )));
-    //}
+    
   }
 
   List<int> _getIntPool() {
     List<int> pool = List<int>.generate(pow(size, 2), (int index) {
       return index;
+    });
+    return pool;
+  }
+
+  List <String> _getStrPool (){
+    List<String> pool = List<String>.generate(pow(size, 2), (int index){
+      return words[index];
     });
     return pool;
   }
@@ -71,7 +86,7 @@ class FocusTrainState extends State<FocusTrain> {
       } while (!pool.contains(ran));
 
       pool.remove(ran);
-      return UnitContainer(ran);
+      return UnitContainer(random:ran);
     });
     return containers;
   }
@@ -79,30 +94,31 @@ class FocusTrainState extends State<FocusTrain> {
 
 class UnitContainer extends StatefulWidget {
   final int random;
-  UnitContainer(this.random) : super();
+  final String str;
+  UnitContainer({this.random,this.str}) : super();
   @override
-  _UnitContainerState createState() => _UnitContainerState(random);
+  _UnitContainerState createState() => _UnitContainerState();
 }
 
 class _UnitContainerState extends State<UnitContainer> {
-  int ran;
-  bool visable = true;
 
-  _UnitContainerState(this.ran) : super();
+  bool visable = true;
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black, width: 1),
-      ),
-      child: Center(
-          child: FlatButton(
-        padding: EdgeInsets.all(5),
-        child: Text(visable ? ran.toString() : '',
-            style: TextStyle(fontSize: 15, color: Colors.red)),
-        onPressed: _punchUnit,
-      )),
-    );
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black, width: 1),
+        ),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+                child: FlatButton(
+              child: Text(visable ? widget.random.toString() : '',
+                  style: TextStyle(fontSize: 15, color: Colors.red)),
+              onPressed: _punchUnit,
+            ))
+          ],
+        ));
   }
 
   void _punchUnit() {
@@ -110,18 +126,19 @@ class _UnitContainerState extends State<UnitContainer> {
     List<int> pool = inherContainer.source;
     int conted = inherContainer.counted;
     Timer timer = inherContainer.timer;
-    if (pool.first == ran) {
+    if (pool.first == widget.random) {
       visable = false;
-      pool.remove(ran);
+      pool.remove(widget.random);
       this.setState(() {});
     }
     if (pool.isEmpty) {
       timer.cancel();
       showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (ctx){return Sucessed(over: true,score: conted, superCtx: context);}
-      );
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) {
+            return Sucessed(over: true, score: conted, superCtx: context);
+          });
     }
   }
 }
@@ -133,7 +150,8 @@ class _UnitContainerInher extends InheritedWidget {
   int counted;
   Timer timer;
 
-  _UnitContainerInher({Key key, this.source,this.counted, @required Widget child})
+  _UnitContainerInher(
+      {Key key, this.source, this.counted, @required Widget child})
       : super(key: key, child: child);
 
   @override
@@ -193,27 +211,25 @@ class _CountDownTimerState extends State<CountDownTimer> {
 
   void _startCountDown() {
     const oneSec = const Duration(seconds: 1);
-     _UnitContainerInher inherContainer = _UnitContainerInher.of(context);
+    _UnitContainerInher inherContainer = _UnitContainerInher.of(context);
 
     var callback = (Timer timer) => {
           this.setState(() {
             if (_count < 1) {
               timer.cancel();
-              // Navigator.of(context).pop();
               showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (BuildContext ctx){
-                  print(ctx.widget);
-                  return Sucessed(
-                    over: false,
-                    superCtx: context,
-                  );
-                }
-              );
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext ctx) {
+                    print(ctx.widget);
+                    return Sucessed(
+                      over: false,
+                      superCtx: context,
+                    );
+                  });
             } else {
               _count -= 1;
-              inherContainer.counted +=1;
+              inherContainer.counted += 1;
             }
           })
         };
@@ -226,32 +242,35 @@ class Sucessed extends StatelessWidget {
   final bool over;
   final int score;
   final BuildContext superCtx;
-  Sucessed({this.over, this.score,this.superCtx});
+  Sucessed({this.over, this.score, this.superCtx});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        width: 200,
-        height: 200,
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(over?'用时：${score.toString()}秒\n太棒了！':'胜败乃兵家常事，再接再厉',style: TextStyle(fontSize: 18,decoration: TextDecoration.none,backgroundColor: Colors.white)),
-            Padding(padding: EdgeInsets.all(10)),
-            MaterialButton(
-              child: Text('返回上层'),
-              color: Colors.blueAccent,
-              onPressed: (){
-                  Navigator.of(context).pop();
-                  Navigator.of(superCtx).pop();
-                },
-            )
-          ],
-        ),
-      )
-    );
+        child: Container(
+      width: 400,
+      height: 400,
+      color: Colors.white,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(over ? '用时：${score.toString()}秒\n太棒了！' : '胜败乃兵家常事，再接再厉',
+              style: TextStyle(
+                  fontSize: 18,
+                  decoration: TextDecoration.none,
+                  backgroundColor: Colors.white)),
+          Padding(padding: EdgeInsets.all(10)),
+          MaterialButton(
+            child: Text('返回上层'),
+            color: Colors.blueAccent,
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(superCtx).pop();
+            },
+          )
+        ],
+      ),
+    ));
   }
 }

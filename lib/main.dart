@@ -36,14 +36,15 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return _ShareInherit(
+        child: MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       //home: MyHomePage(),
       home: HomeView(),
-    );
+    ));
   }
 }
 
@@ -131,7 +132,7 @@ class MyHomePage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              FocusTrain.number(6)));
+                              FocusTrain.number(size:6)));
                 },
               )
             ],
@@ -145,60 +146,58 @@ class MyHomePage extends StatelessWidget {
 class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _ShareInherit(
-      child: Scaffold(
-        body: Row(
-          children: <Widget>[
-            Container(
-              width: MediaQuery.of(context).size.width / 4,
-              color: Colors.yellowAccent,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  TrainSuperButton(
-                    idx: 0,
-                    title: '专注力训练',
-                  ),
-                  TrainSuperButton(
-                    idx: 1,
-                    title: '视觉感知训练',
-                  ),
-                  TrainSuperButton(
-                    idx: 2,
-                    title: '视幅拓展训练',
-                  ),
-                  TrainSuperButton(
-                    idx: 3,
-                    title: '视点移动训练',
-                  )
-                ],
-              ),
+    return Scaffold(
+      body: Row(
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width / 4,
+            color: Colors.yellowAccent,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                TrainSuperButton(
+                  idx: 0,
+                  title: '专注力训练',
+                ),
+                TrainSuperButton(
+                  idx: 1,
+                  title: '视觉感知训练',
+                ),
+                TrainSuperButton(
+                  idx: 2,
+                  title: '视幅拓展训练',
+                ),
+                TrainSuperButton(
+                  idx: 3,
+                  title: '视点移动训练',
+                )
+              ],
             ),
-            Expanded(
-              // child: Container(
-              //     color: Colors.blueGrey,
-              //     child: Padding(
-              //       padding: const EdgeInsets.fromLTRB(50, 60, 50, 30),
-              //       child: Column(
-              //         crossAxisAlignment: CrossAxisAlignment.stretch,
-              //         children: <Widget>[
-              //           Container(
-              //             color: Colors.blueAccent,
-              //             width: MediaQuery.of(context).size.width / 3,
-              //             height: MediaQuery.of(context).size.height / 1.5,
-              //           ),
-              //           Expanded(
-              //             child: Container(
-              //               color: Colors.grey,
-              //             ),
-              //           )
-              //         ],
-              //       ),
-              //     )),
-              child: GameDetailView(),
-            )
-          ],
-        ),
+          ),
+          Expanded(
+            // child: Container(
+            //     color: Colors.blueGrey,
+            //     child: Padding(
+            //       padding: const EdgeInsets.fromLTRB(50, 60, 50, 30),
+            //       child: Column(
+            //         crossAxisAlignment: CrossAxisAlignment.stretch,
+            //         children: <Widget>[
+            //           Container(
+            //             color: Colors.blueAccent,
+            //             width: MediaQuery.of(context).size.width / 3,
+            //             height: MediaQuery.of(context).size.height / 1.5,
+            //           ),
+            //           Expanded(
+            //             child: Container(
+            //               color: Colors.grey,
+            //             ),
+            //           )
+            //         ],
+            //       ),
+            //     )),
+            child: GameDetailView(),
+          )
+        ],
       ),
     );
   }
@@ -238,7 +237,6 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
                 offstage: hide,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    //children: getChildren(),
                     children: getChildren()),
               ))
         ],
@@ -383,7 +381,7 @@ class _GameDetailViewState extends State<GameDetailView> {
                                     height: 49,
                                     child: Text('start',
                                         style: TextStyle(fontSize: 18)),
-                                    onPressed: () {},
+                                    onPressed: _startGame,
                                   )
                                 ])))
                       ],
@@ -400,7 +398,7 @@ class _GameDetailViewState extends State<GameDetailView> {
     return childIdx == -1 ? '欢迎来到训练场' : '${menu[superIdx][childIdx]}';
   }
 
-  void startGame() {
+  void _startGame() {
     int supIdx = _ShareInherit.of(context).superIdx;
     int chilIdx = _ShareInherit.of(context).childIdx;
     GameMode mode = _ShareInherit.of(context).mode;
@@ -409,10 +407,9 @@ class _GameDetailViewState extends State<GameDetailView> {
     GameAssistant helper = GameAssistant(
         childIdx: chilIdx, superIdx: supIdx, mode: mode, gameSize: size);
 
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => helper.getTargetGame()));
+    print(helper.getTargetGame());
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) => helper.getTargetGame()));
   }
 
   StreamSubscription subscription;
@@ -623,7 +620,7 @@ class _ShareInherit extends InheritedWidget {
 
   @override
   bool updateShouldNotify(_ShareInherit oldWidget) {
-    return true;
+    return false;
   }
 }
 
@@ -645,16 +642,26 @@ class GameAssistant {
     Widget wid;
     switch (superIdx) {
       case 0:
-        wid = FocusTrain.number(gameSize);
+        wid = FocusTrain.number(size:gameSize);
         break;
       case 1:
-        wid = PerceptionTrain(mode: mode,content: GameCtx.ctxNum);
+        wid = PerceptionTrain(mode: mode, content: GameCtx.ctxNum);
         break;
       case 2:
-        wid = Vision(path: GamePath.pathN);
+        switch (childIdx) {
+          case 0:
+            wid = VistaTrain(shape: RectShape.shapeRoundRect,mode: mode,); 
+            break;
+          case 1:
+            wid = VistaTrain(shape: RectShape.shapeCycle,mode: mode); 
+            break;
+          default:
+            wid = VistaTrain(shape: RectShape.shapeRoundRect); 
+            break;
+        }
         break;
       case 3:
-        wid = VistaTrain(shape: RectShape.shapeRoundRect);
+        wid = Vision(path: GamePath.pathN);
         break;
       default:
     }
