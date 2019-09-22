@@ -7,21 +7,79 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:read_excellent/Tools/UIDefine.dart';
 
-const List <String> words = ['可','壤','露','央','籍','攀','然','理',
-                    '接','着','落','从','本','心','熟','衡',
-                    '融','甲','乃','与','凝','同','繁','躁',
-                    '国','年','如','十','个','蠡','黯','矗',
-                    '灝','昧','眨','仔','白','题','篇','入',
-                    '卜','点','俪','总','揽','亲','言','覆',
-                    '圭','达','训','各','考','馕','得','颧',
-                    '霾','黯','籍','蹲','麓','徙','瞭','黔'];
+const List<String> words = [
+  '可',
+  '壤',
+  '露',
+  '央',
+  '籍',
+  '攀',
+  '然',
+  '理',
+  '接',
+  '着',
+  '落',
+  '从',
+  '本',
+  '心',
+  '熟',
+  '衡',
+  '融',
+  '甲',
+  '乃',
+  '与',
+  '凝',
+  '同',
+  '繁',
+  '躁',
+  '国',
+  '年',
+  '如',
+  '十',
+  '个',
+  '蠡',
+  '黯',
+  '矗',
+  '灝',
+  '昧',
+  '眨',
+  '仔',
+  '白',
+  '题',
+  '篇',
+  '入',
+  '卜',
+  '点',
+  '俪',
+  '总',
+  '揽',
+  '亲',
+  '言',
+  '覆',
+  '圭',
+  '达',
+  '训',
+  '各',
+  '考',
+  '馕',
+  '得',
+  '颧',
+  '霾',
+  '黯',
+  '籍',
+  '蹲',
+  '麓',
+  '徙',
+  '瞭',
+  '黔'
+];
 
 class FocusTrain extends StatefulWidget {
   final int size;
   final GameCtx ctx;
 
   FocusTrain(this.size, this.ctx);
-  FocusTrain.number(int x,GameCtx ctx) : this(x,ctx);
+  FocusTrain.number({int size, GameCtx ctx}) : this(size, ctx);
   @override
   FocusTrainState createState() => FocusTrainState(size, ctx);
 }
@@ -30,21 +88,30 @@ class FocusTrainState extends State<FocusTrain> {
   final GameCtx ctx;
   final int size;
   List<UnitContainer> _datasource;
+  String rules;
 
-  FocusTrainState(this.size,this.ctx) {
-    _datasource = _buildContextList();
+  String numInfo;
+
+  FocusTrainState(this.size, this.ctx) {
+    _datasource = ctx==GameCtx.ctxNum?_buildContextList():_buildContextStrList();
+    numInfo = ctx==GameCtx.ctxNum?'游戏说明：请按0-${(size*size-1).toString()}顺序消除数字':'游戏说明：请按以下顺序消除文字';
+    rules = words.sublist(0,size*size).join(' ');
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: _UnitContainerInher(
-            source: _getIntPool(),
+            source: ctx == GameCtx.ctxNum ? _getIntPool() : words.sublist(0,size*size),
             counted: 0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-
+                Text('$numInfo',style: TextStyle(fontSize: 14,color: Colors.black)),
+                Offstage(
+                  offstage: ctx == GameCtx.ctxNum,
+                  child: Text('$rules',style: TextStyle(fontSize: 14,color: Colors.black))
+                ),
                 Container(
                   width: MediaQuery.of(context).size.height * 0.7,
                   height: MediaQuery.of(context).size.height * 0.7 + 25,
@@ -59,19 +126,11 @@ class FocusTrainState extends State<FocusTrain> {
                 CountDownTimer(90)
               ],
             )));
-    
   }
 
   List<int> _getIntPool() {
     List<int> pool = List<int>.generate(pow(size, 2), (int index) {
       return index;
-    });
-    return pool;
-  }
-
-  List <String> _getStrPool (){
-    List<String> pool = List<String>.generate(pow(size, 2), (int index){
-      return words[index];
     });
     return pool;
   }
@@ -86,7 +145,30 @@ class FocusTrainState extends State<FocusTrain> {
       } while (!pool.contains(ran));
 
       pool.remove(ran);
-      return UnitContainer(random:ran);
+      return UnitContainer(
+        random: ran,
+        ctx: ctx,
+      );
+    });
+    return containers;
+  }
+
+  List<UnitContainer> _buildContextStrList() {
+    List pool = words.sublist(0,size*size);
+    List<UnitContainer> containers =
+        List<UnitContainer>.generate(pow(size, 2), (int index) {
+      int ran;
+      String str;
+      do {
+        ran = Random.secure().nextInt(size * size);
+        str = words[ran];
+      } while (!pool.contains(str));
+
+      pool.remove(str);
+      return UnitContainer(
+        str: str,
+        ctx: ctx,
+      );
     });
     return containers;
   }
@@ -95,13 +177,13 @@ class FocusTrainState extends State<FocusTrain> {
 class UnitContainer extends StatefulWidget {
   final int random;
   final String str;
-  UnitContainer({this.random,this.str}) : super();
+  final GameCtx ctx;
+  UnitContainer({this.random, this.str, this.ctx}) : super();
   @override
   _UnitContainerState createState() => _UnitContainerState();
 }
 
 class _UnitContainerState extends State<UnitContainer> {
-
   bool visable = true;
   @override
   Widget build(BuildContext context) {
@@ -113,7 +195,12 @@ class _UnitContainerState extends State<UnitContainer> {
           children: <Widget>[
             Expanded(
                 child: FlatButton(
-              child: Text(visable ? widget.random.toString() : '',
+              child: Text(
+                  visable
+                      ? ((widget.ctx == GameCtx.ctxNum)
+                          ? widget.random.toString()
+                          : widget.str)
+                      : '',
                   style: TextStyle(fontSize: 15, color: Colors.red)),
               onPressed: _punchUnit,
             ))
@@ -123,12 +210,14 @@ class _UnitContainerState extends State<UnitContainer> {
 
   void _punchUnit() {
     _UnitContainerInher inherContainer = _UnitContainerInher.of(context);
-    List<int> pool = inherContainer.source;
+    List pool = inherContainer.source;
     int conted = inherContainer.counted;
     Timer timer = inherContainer.timer;
-    if (pool.first == widget.random) {
+    var obj = (widget.ctx == GameCtx.ctxNum) ? widget.random : widget.str;
+
+    if (pool.first == widget.random || pool.first == widget.str) {
       visable = false;
-      pool.remove(widget.random);
+      pool.remove(obj);
       this.setState(() {});
     }
     if (pool.isEmpty) {
@@ -146,7 +235,7 @@ class _UnitContainerState extends State<UnitContainer> {
 class _UnitContainerInher extends InheritedWidget {
   static _UnitContainerInher of(BuildContext context) =>
       context.inheritFromWidgetOfExactType(_UnitContainerInher);
-  List<int> source;
+  List source;
   int counted;
   Timer timer;
 

@@ -642,7 +642,11 @@ class GameAssistant {
     Widget wid;
     switch (superIdx) {
       case 0:
-        wid = FocusTrain.number(size:gameSize);
+        if (childIdx == 0){
+          wid = FocusTrain.number(size:gameSize,ctx: GameCtx.ctxNum);
+        }else{
+          wid = FocusTrain.number(size:gameSize,ctx: GameCtx.ctxStr);
+        }
         break;
       case 1:
         wid = PerceptionTrain(mode: mode, content: GameCtx.ctxNum);
