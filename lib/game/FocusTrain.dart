@@ -93,25 +93,31 @@ class FocusTrainState extends State<FocusTrain> {
   String numInfo;
 
   FocusTrainState(this.size, this.ctx) {
-    _datasource = ctx==GameCtx.ctxNum?_buildContextList():_buildContextStrList();
-    numInfo = ctx==GameCtx.ctxNum?'游戏说明：请按0-${(size*size-1).toString()}顺序消除数字':'游戏说明：请按以下顺序消除文字';
-    rules = words.sublist(0,size*size).join(' ');
+    _datasource =
+        ctx == GameCtx.ctxNum ? _buildContextList() : _buildContextStrList();
+    numInfo = ctx == GameCtx.ctxNum
+        ? '游戏说明：请按0-${(size * size - 1).toString()}顺序消除数字'
+        : '游戏说明：请按以下顺序消除文字';
+    rules = words.sublist(0, size * size).join(' ');
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: _UnitContainerInher(
-            source: ctx == GameCtx.ctxNum ? _getIntPool() : words.sublist(0,size*size),
+            source: ctx == GameCtx.ctxNum
+                ? _getIntPool()
+                : words.sublist(0, size * size),
             counted: 0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text('$numInfo',style: TextStyle(fontSize: 14,color: Colors.black)),
+                Text('$numInfo',
+                    style: TextStyle(fontSize: 14, color: Colors.black)),
                 Offstage(
-                  offstage: ctx == GameCtx.ctxNum,
-                  child: Text('$rules',style: TextStyle(fontSize: 14,color: Colors.black))
-                ),
+                    offstage: ctx == GameCtx.ctxNum,
+                    child: Text('$rules',
+                        style: TextStyle(fontSize: 14, color: Colors.black))),
                 Container(
                   width: MediaQuery.of(context).size.height * 0.7,
                   height: MediaQuery.of(context).size.height * 0.7 + 25,
@@ -123,9 +129,34 @@ class FocusTrainState extends State<FocusTrain> {
                       children: _datasource),
                 ),
                 Padding(padding: EdgeInsets.all(10)),
-                CountDownTimer(90)
+                CountDownTimer(_timeLimit())
               ],
             )));
+  }
+
+  int _timeLimit() {
+    int sec;
+    switch (size) {
+      case 3:
+        sec = 15;
+        break;
+      case 4:
+        sec = 25;
+        break;
+      case 5:
+        sec = 45;
+        break;
+      case 6:
+        sec = 85;
+        break;
+      case 7:
+        sec = 165;
+        break;
+      case 8:
+        sec = 325;
+        break;
+    }
+    return sec;
   }
 
   List<int> _getIntPool() {
@@ -154,7 +185,7 @@ class FocusTrainState extends State<FocusTrain> {
   }
 
   List<UnitContainer> _buildContextStrList() {
-    List pool = words.sublist(0,size*size);
+    List pool = words.sublist(0, size * size);
     List<UnitContainer> containers =
         List<UnitContainer>.generate(pow(size, 2), (int index) {
       int ran;
@@ -259,7 +290,7 @@ class CountDownTimer extends StatefulWidget {
 
 class _CountDownTimerState extends State<CountDownTimer> {
   Timer _timer;
-  int _count = 5;
+  int _count;
 
   _CountDownTimerState(this._count);
 

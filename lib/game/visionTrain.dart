@@ -45,10 +45,6 @@ class _VisionState extends State<Vision> {
 
   List<Widget> _dataSource() {
     List<Image> pics = [
-      // Icon(Icons.account_balance_wallet),
-      // Icon(Icons.add_photo_alternate),
-      // Icon(Icons.airline_seat_legroom_reduced),
-      // Icon(Icons.battery_charging_full)
       Image.asset('images/棒冰.png'),
       Image.asset('images/爆米花.png'),
       Image.asset('images/开心果.png'),
@@ -72,6 +68,12 @@ class _VisionState extends State<Vision> {
     return List<Widget>.generate(8, (int idx) {
       double x = -0.75 + idx ~/ 2 * 0.5;
       double y = (idx % 2 == 0) ? -0.75 : 0.75;
+
+      if(widget.path == GamePath.pathZ){
+        double t = x;
+        x = y;
+        y = t;
+      }
 
       return Align(
           child: _UnitView(icon: datalists[idx], index: idx),

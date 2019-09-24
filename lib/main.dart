@@ -15,8 +15,8 @@ EventBus eventBus = EventBus();
 const List menu = [
   ['数字舒尔特表格训练', '文字舒尔特表格训练'],
   ['数字感知训练', '中文感知训练', '第一图形感知训练', '多图形感知训练'],
-  ['矩形扩展训练', '圆形扩展训练', '数字扩展训练', '文字扩展训练'],
-  ['圆形移动训练', '之字形移动训练', 'N字形移动训练']
+  ['矩形扩展训练', '圆形扩展训练'/*, '数字扩展训练', '文字扩展训练'*/],
+  ['N字形移动训练', '之字形移动训练'/*, '圆形移动训练'*/]
 ];
 
 void main() {
@@ -42,104 +42,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      //home: MyHomePage(),
       home: HomeView(),
     ));
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  MyHomePage({Key key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            width: 400,
-            height: 200,
-            decoration: BoxDecoration(
-              border: Border.all(width: 2, color: Colors.red),
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Center(
-              child: Text('让孩子爱上阅读\n成为学霸',
-                  style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              MaterialButton(
-                child: Text('速度训练'),
-                color: Colors.yellow[300],
-                height: 40,
-                minWidth: 120,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              VistaTrain(shape: RectShape.shapeRoundRect)));
-                },
-              ),
-              MaterialButton(
-                child: Text('限时阅读'),
-                color: Colors.yellow[300],
-                height: 40,
-                minWidth: 120,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              Vision(path: GamePath.pathN)));
-                },
-              ),
-              MaterialButton(
-                child: Text('速度测评'),
-                color: Colors.yellow[300],
-                height: 40,
-                minWidth: 120,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => PerceptionTrain(
-                              mode: GameMode.modeNormal,
-                              content: GameCtx.ctxNum)));
-                },
-              ),
-              MaterialButton(
-                child: Text('潜能训练'),
-                color: Colors.yellow[300],
-                height: 40,
-                minWidth: 120,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              FocusTrain.number(size:6)));
-                },
-              )
-            ],
-          )
-        ],
-      ),
-    );
   }
 }
 
@@ -175,26 +79,6 @@ class HomeView extends StatelessWidget {
             ),
           ),
           Expanded(
-            // child: Container(
-            //     color: Colors.blueGrey,
-            //     child: Padding(
-            //       padding: const EdgeInsets.fromLTRB(50, 60, 50, 30),
-            //       child: Column(
-            //         crossAxisAlignment: CrossAxisAlignment.stretch,
-            //         children: <Widget>[
-            //           Container(
-            //             color: Colors.blueAccent,
-            //             width: MediaQuery.of(context).size.width / 3,
-            //             height: MediaQuery.of(context).size.height / 1.5,
-            //           ),
-            //           Expanded(
-            //             child: Container(
-            //               color: Colors.grey,
-            //             ),
-            //           )
-            //         ],
-            //       ),
-            //     )),
             child: GameDetailView(),
           )
         ],
@@ -221,6 +105,7 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
       child: Column(
         children: <Widget>[
           MaterialButton(
+            
             minWidth: MediaQuery.of(context).size.width / 6.5,
             padding: EdgeInsets.all(12),
             color: Colors.deepOrange,
@@ -249,11 +134,6 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
     return List.generate(temp.length, (index) {
       return Padding(
           padding: EdgeInsets.all(0),
-          // child: FlatButton(
-          //   child: Text('${temp[index]}',
-          //       style: TextStyle(fontSize: 14), textAlign: TextAlign.center),
-          //   onPressed: () {},
-          // )
           child: ChildGameSel(superIdx: widget.idx, childIdx: index));
     });
   }
@@ -607,8 +487,8 @@ class _ShareInherit extends InheritedWidget {
 
   final Widget child;
 
-  int superIdx;
-  int childIdx;
+  int superIdx = 0;
+  int childIdx = 0;
 
   GameMode mode = GameMode.modeFast;
   int gameSize = 3;
@@ -624,7 +504,7 @@ class _ShareInherit extends InheritedWidget {
   }
 }
 
-//辅助工具类 筛选游戏
+//辅助工类 筛选游戏
 
 class GameAssistant {
   @required
@@ -642,30 +522,54 @@ class GameAssistant {
     Widget wid;
     switch (superIdx) {
       case 0:
-        if (childIdx == 0){
-          wid = FocusTrain.number(size:gameSize,ctx: GameCtx.ctxNum);
-        }else{
-          wid = FocusTrain.number(size:gameSize,ctx: GameCtx.ctxStr);
+        if (childIdx == 0) {
+          wid = FocusTrain.number(size: gameSize, ctx: GameCtx.ctxNum);
+        } else {
+          wid = FocusTrain.number(size: gameSize, ctx: GameCtx.ctxStr);
         }
         break;
       case 1:
-        wid = PerceptionTrain(mode: mode, content: GameCtx.ctxNum);
+        switch (childIdx) {
+          case 0:
+            wid = PerceptionTrain(mode: mode, content: GameCtx.ctxNum);
+            break;
+          case 1:
+            wid = PerceptionTrain(mode: mode, content: GameCtx.ctxStr);
+            break;
+          case 2:
+            wid = PerceptionTrain(mode: mode, content: GameCtx.ctxGraphicUnion);
+            break;
+          case 3:
+            wid = PerceptionTrain(mode: mode, content: GameCtx.ctxGraphic);
+        }
         break;
       case 2:
         switch (childIdx) {
           case 0:
-            wid = VistaTrain(shape: RectShape.shapeRoundRect,mode: mode,); 
+            wid = VistaTrain(
+              shape: RectShape.shapeRoundRect,
+              mode: mode,
+            );
             break;
           case 1:
-            wid = VistaTrain(shape: RectShape.shapeCycle,mode: mode); 
+            wid = VistaTrain(shape: RectShape.shapeCycle, mode: mode);
             break;
           default:
-            wid = VistaTrain(shape: RectShape.shapeRoundRect); 
+            wid = VistaTrain(shape: RectShape.shapeRoundRect);
             break;
         }
         break;
       case 3:
-        wid = Vision(path: GamePath.pathN);
+        switch (childIdx) {
+          case 0:
+            wid = Vision(path: GamePath.pathN);
+            break;
+          case 1:
+            wid = Vision(path: GamePath.pathZ);
+            break;
+          default:
+        }
+
         break;
       default:
     }
