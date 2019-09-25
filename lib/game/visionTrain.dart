@@ -270,6 +270,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
     List<Widget> res = List.generate(4, (int idx) {
       return Flexible(
           child: RadioListTile(
+        activeColor: const Color(0xFFFF7720),
         value: childrens[idx],
         groupValue: groupValue,
         title: Text(

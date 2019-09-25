@@ -179,7 +179,7 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
           barrierDismissible: false,
           context: context,
           builder: (BuildContext ctx) {
-            return _QuestAnswer(lenth, ctx);
+            return _QuestAnswer(lenth, ctx, widget.content);
           });
     };
 
@@ -221,7 +221,8 @@ class ShareInherit extends InheritedWidget {
 class _QuestAnswer extends StatefulWidget {
   final int answer;
   final BuildContext ctxx;
-  _QuestAnswer(this.answer, this.ctxx);
+  final GameCtx content;
+  _QuestAnswer(this.answer, this.ctxx, this.content);
   @override
   _QuestAnswerState createState() => _QuestAnswerState(answer, ctxx);
 }
@@ -229,7 +230,6 @@ class _QuestAnswer extends StatefulWidget {
 class _QuestAnswerState extends State<_QuestAnswer> {
   final int answer;
   final BuildContext ctxx;
-
   List childrens;
   _QuestAnswerState(this.answer, this.ctxx);
 
@@ -247,7 +247,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
                   image: const AssetImage('images/bg.png'), fit: BoxFit.fill)),
           child: Column(children: <Widget>[
             SizedBox(height: 50),
-            Text('请选择数字的个数',
+            Text(_queStr(),
                 style: TextStyle(fontSize: 20, color: Colors.white)),
             SizedBox(height: 30),
             Row(
@@ -281,6 +281,22 @@ class _QuestAnswerState extends State<_QuestAnswer> {
           ])),
     );
   }
+
+  String _queStr() {
+      String qstr;
+      switch (widget.content) {
+        case GameCtx.ctxNum:
+          qstr = '请选择数字的数量';
+          break;
+        case GameCtx.ctxStr:
+          qstr = '请选择文字的数量';
+          break;
+        default:
+          qstr = '请选择图片的数量';
+          break;
+      }
+      return qstr;
+    }
 
   List _getEnumAry() {
     List source;

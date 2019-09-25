@@ -81,7 +81,7 @@ class _VistaRectState extends State<VistaRect> {
             width: cdr,
             height: cdr,
             decoration: BoxDecoration(
-                color: Colors.red,
+                color: const Color(0xFFF99A2f),
                 borderRadius: BorderRadius.circular(cdr / 2)),
           ),
         ));
