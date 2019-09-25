@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:read_excellent/Tools/UIDefine.dart';
+import '../Tools/UIDefine.dart';
 import 'package:event_bus/event_bus.dart';
 
 EventBus eventBus = new EventBus();
@@ -24,23 +24,29 @@ class _VisionState extends State<Vision> {
   int answer = 0;
   //目标图形
   Widget target;
-  List<Image>datalists;
+  List<Image> datalists;
 
   _VisionState(this.path, this.mode);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueAccent,
-      body: Padding(
-        padding: const EdgeInsets.all(30),
+        body: Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: const AssetImage('images/bg.png'), fit: BoxFit.fill)),
+      child: Padding(
+        padding: const EdgeInsets.all(50),
         child: Container(
-          color: Colors.yellowAccent,
+          decoration: BoxDecoration(
+              color: const Color(0xFFE8DFD6),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(width: 12, color: const Color(0xFFFF7720))),
           child: Stack(
             children: _dataSource(),
           ),
         ),
       ),
-    );
+    ));
   }
 
   List<Widget> _dataSource() {
@@ -69,7 +75,7 @@ class _VisionState extends State<Vision> {
       double x = -0.75 + idx ~/ 2 * 0.5;
       double y = (idx % 2 == 0) ? -0.75 : 0.75;
 
-      if(widget.path == GamePath.pathZ){
+      if (widget.path == GamePath.pathZ) {
         double t = x;
         x = y;
         y = t;
@@ -125,7 +131,7 @@ class _VisionState extends State<Vision> {
               return _QuestAnswer(answer, context, target);
             });
       } else {
-        eventBus.fire(FreshEvent((7 - cout),datalists));
+        eventBus.fire(FreshEvent((7 - cout), datalists));
         cout -= 1;
       }
     };
@@ -165,7 +171,6 @@ class _UnitViewState extends State<_UnitView> {
   StreamSubscription subscription;
   @override
   void initState() {
-
     subscription = eventBus.on<FreshEvent>().listen((event) {
       setState(() {
         hide = event.current == index ? false : true;
@@ -204,40 +209,46 @@ class _QuestAnswerState extends State<_QuestAnswer> {
   int groupValue;
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Dialog(
+    return Scaffold(
+      backgroundColor: Color(0x00),
+      body: Container(
+          margin: EdgeInsets.fromLTRB(30, 10, 30, 30),
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: const AssetImage('images/bg.png'), fit: BoxFit.fill)),
           child: Column(children: <Widget>[
-        SizedBox(height: 30),
-        target,
-        SizedBox(
-          height: 10,
-        ),
-        Text('请选择上面图形的出现次数', style: TextStyle(fontSize: 20)),
-        SizedBox(height: 30), 
-        Row(
-          children: _getOptions(),
-        ),
-        Expanded(
-          child: Stack(children: [
-            Align(
-                alignment: Alignment(0.8, 0.6),
-                child: FlatButton(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(Icons.backspace),
-                      SizedBox(width: 10),
-                      Text('退出训练', style: TextStyle(fontSize: 14)),
-                    ],
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(ctxx).pop();
-                  },
-                ))
-          ]),
-        )
-      ])),
+            SizedBox(height: 30),
+            target,
+            SizedBox(
+              height: 10,
+            ),
+            Text('请选择上面图形的出现次数',
+                style: TextStyle(fontSize: 20, color: Colors.white)),
+            SizedBox(height: 30),
+            Row(
+              children: _getOptions(),
+            ),
+            Expanded(
+              child: Stack(children: [
+                Align(
+                    alignment: Alignment(0.8, 0.6),
+                    child: FlatButton(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Image.asset('images/icon_back.png'),
+                          SizedBox(width: 10),
+                          Text('退出训练', style: TextStyle(fontSize: 14)),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(ctxx).pop();
+                      },
+                    ))
+              ]),
+            )
+          ])),
     );
   }
 
@@ -263,7 +274,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
         groupValue: groupValue,
         title: Text(
           '${childrens[idx]}',
-          style: TextStyle(fontSize: 14),
+          style: TextStyle(fontSize: 14, color: Colors.white),
         ),
         onChanged: (value) {
           this.setState(() {
@@ -289,8 +300,8 @@ class _QuestAnswerState extends State<_QuestAnswer> {
 //通知
 class FreshEvent {
   int current;
-  List <Image> datalist;
-  FreshEvent(this.current,this.datalist);
+  List<Image> datalist;
+  FreshEvent(this.current, this.datalist);
 }
 
 class ResetNotify {

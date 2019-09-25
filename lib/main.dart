@@ -5,7 +5,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:read_excellent/Tools/UIDefine.dart';
+import 'Tools/UIDefine.dart';
 import 'game/FocusTrain.dart';
 import 'game/perception.dart';
 import 'game/visionTrain.dart';
@@ -15,8 +15,8 @@ EventBus eventBus = EventBus();
 const List menu = [
   ['数字舒尔特表格训练', '文字舒尔特表格训练'],
   ['数字感知训练', '中文感知训练', '第一图形感知训练', '多图形感知训练'],
-  ['矩形扩展训练', '圆形扩展训练'/*, '数字扩展训练', '文字扩展训练'*/],
-  ['N字形移动训练', '之字形移动训练'/*, '圆形移动训练'*/]
+  ['矩形扩展训练', '圆形扩展训练' /*, '数字扩展训练', '文字扩展训练'*/],
+  ['N字形移动训练', '之字形移动训练' /*, '圆形移动训练'*/]
 ];
 
 void main() {
@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        unselectedWidgetColor: Colors.white,
       ),
       home: HomeView(),
     ));
@@ -51,38 +52,49 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
-        children: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width / 4,
-            color: Colors.yellowAccent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                TrainSuperButton(
-                  idx: 0,
-                  title: '专注力训练',
+      backgroundColor: const Color(0xFF448D60),
+      body: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: const AssetImage('images/bg.png'), fit: BoxFit.fill)),
+          child: Row(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                    color: const Color(0xFFF99A2F),
+                    borderRadius: BorderRadius.horizontal(
+                        left: Radius.zero, right: Radius.circular(60))),
+                width: MediaQuery.of(context).size.width / 4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    TrainSuperButton(
+                      idx: 0,
+                      title: '专注力训练',
+                    ),
+                    SizedBox(height: 20),
+                    TrainSuperButton(
+                      idx: 1,
+                      title: '视觉感知训练',
+                    ),
+                    SizedBox(height: 20),
+                    TrainSuperButton(
+                      idx: 2,
+                      title: '视幅拓展训练',
+                    ),
+                    SizedBox(height: 20),
+                    TrainSuperButton(
+                      idx: 3,
+                      title: '视点移动训练',
+                    )
+                  ],
                 ),
-                TrainSuperButton(
-                  idx: 1,
-                  title: '视觉感知训练',
-                ),
-                TrainSuperButton(
-                  idx: 2,
-                  title: '视幅拓展训练',
-                ),
-                TrainSuperButton(
-                  idx: 3,
-                  title: '视点移动训练',
-                )
-              ],
-            ),
-          ),
-          Expanded(
-            child: GameDetailView(),
-          )
-        ],
-      ),
+              ),
+              Expanded(
+                child: GameDetailView(),
+              )
+            ],
+          )),
     );
   }
 }
@@ -101,23 +113,28 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width / 6.5,
+      width: MediaQuery.of(context).size.width / 5.5,
       child: Column(
         children: <Widget>[
           MaterialButton(
-            
-            minWidth: MediaQuery.of(context).size.width / 6.5,
-            padding: EdgeInsets.all(12),
-            color: Colors.deepOrange,
+            minWidth: MediaQuery.of(context).size.width / 5.5,
+            padding: EdgeInsets.all(20),
             child: Text('${widget.title}',
                 style: TextStyle(
-                    fontSize: 16, color: hide ? Colors.black : Colors.white)),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    fontSize: 16,
+                    fontFamily: 'PingFangSC-Medium',
+                    color: hide ? Colors.white : Color(0xFFF99A2F))),
+            color: hide ? Color(0xFFF99A2F) : Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+                side: BorderSide(width: 6, color: Color(0xFFFFC85F))),
             onPressed: _btnPress,
           ),
+          SizedBox(height: 3),
           Container(
-              color: Colors.white,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  color: const Color(0xFFE8DFD6)),
               child: Offstage(
                 offstage: hide,
                 child: Column(
@@ -174,8 +191,8 @@ class _ChildGameSelState extends State<ChildGameSel> {
     List temp = menu[widget.superIdx];
     return FlatButton(
       child: Text('${temp[widget.childIdx]}',
-          style: TextStyle(fontSize: 14), textAlign: TextAlign.center),
-      textColor: pressed ? Colors.red : Colors.black,
+          style: TextStyle(fontSize: 16), textAlign: TextAlign.center),
+      textColor: pressed ? Color(0xFFFF7720) : Colors.black,
       onPressed: () {
         eventBus.fire(
             ChildSelEvent(childIdx: widget.childIdx, subIdx: widget.superIdx));
@@ -218,59 +235,83 @@ class _GameDetailViewState extends State<GameDetailView> {
   Widget build(BuildContext context) {
     return Container(
       child: Container(
-          color: Colors.blueGrey,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(50, 60, 50, 30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                    color: Colors.blueAccent,
-                    width: MediaQuery.of(context).size.width / 3,
-                    height: MediaQuery.of(context).size.height / 1.5,
-                    child: Center(
-                      child: Container(
-                          child: Text(_scribe(),
-                              style: TextStyle(
-                                  fontSize: 28,
-                                  color: Colors.white,
-                                  decoration: TextDecoration.none))),
-                    )),
-                Expanded(
+        padding: const EdgeInsets.fromLTRB(50, 30, 50, 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Stack(alignment: AlignmentDirectional.bottomEnd, children: <Widget>[
+              FlatButton(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Image.asset('images/icon_back.png'),
+                    SizedBox(width: 10),
+                    Text('退出',
+                        style: TextStyle(
+                            fontSize: 14, decoration: TextDecoration.none)),
+                  ],
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ]),
+            Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Color(0xFFE8DFD6),
+                    border: Border.all(width: 12, color: Color(0xFFFF7720))),
+                width: MediaQuery.of(context).size.width / 3,
+                height: MediaQuery.of(context).size.height / 1.6,
+                child: Center(
                   child: Container(
-                    color: Colors.deepPurpleAccent,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 3,
-                          child: superIdx > 0 ? ModeOption() : FocusOption(),
-                        ),
-                        Expanded(
-                            flex: 2,
-                            child: Container(
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                  MaterialButton(
-                                    color: Colors.orange,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    minWidth: 150,
-                                    height: 49,
-                                    child: Text('start',
-                                        style: TextStyle(fontSize: 18)),
-                                    onPressed: _startGame,
-                                  )
-                                ])))
-                      ],
+                      child: Text(_scribe(),
+                          style: TextStyle(
+                              fontSize: 28,
+                              color: Colors.white,
+                              decoration: TextDecoration.none))),
+                )),
+            SizedBox(height: 20),
+            Expanded(
+              child: Container(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 3,
+                      child: superIdx > 0 ? ModeOption() : FocusOption(),
                     ),
-                  ),
-                )
-              ],
-            ),
-          )),
+                    Expanded(
+                        flex: 2,
+                        child: Container(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                              FlatButton(
+                                child: Container(
+                                    width: 182,
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: const AssetImage(
+                                                'images/an_bg_n.png'),
+                                            fit: BoxFit.fill)),
+                                    child: Center(
+                                        child: Text('开始',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.white)))),
+                                onPressed: _startGame,
+                              )
+                            ])))
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      )),
     );
   }
 
@@ -325,6 +366,7 @@ class _ModeOptionState extends State<ModeOption> {
         children: <Widget>[
           Flexible(
             child: RadioListTile(
+                activeColor: const Color(0xFFFF7720),
                 title: Text('快',
                     style: TextStyle(fontSize: 14, color: Colors.white)),
                 value: 0,
@@ -335,6 +377,7 @@ class _ModeOptionState extends State<ModeOption> {
           ),
           Flexible(
             child: RadioListTile(
+                activeColor: const Color(0xFFFF7720),
                 title: Text('中',
                     style: TextStyle(fontSize: 14, color: Colors.white)),
                 value: 1,
@@ -345,6 +388,7 @@ class _ModeOptionState extends State<ModeOption> {
           ),
           Flexible(
             child: RadioListTile(
+                activeColor: const Color(0xFFFF7720),
                 title: Text('慢',
                     style: TextStyle(fontSize: 14, color: Colors.white)),
                 value: 2,
@@ -383,6 +427,7 @@ class _FocusOptionState extends State<FocusOption> {
             children: <Widget>[
               Flexible(
                 child: RadioListTile(
+                    activeColor: const Color(0xFFFF7720),
                     title: Text('3x3',
                         style: TextStyle(fontSize: 14, color: Colors.white)),
                     value: 0,
@@ -393,6 +438,7 @@ class _FocusOptionState extends State<FocusOption> {
               ),
               Flexible(
                 child: RadioListTile(
+                    activeColor: const Color(0xFFFF7720),
                     title: Text('4x4',
                         style: TextStyle(fontSize: 14, color: Colors.white)),
                     value: 1,
@@ -403,6 +449,7 @@ class _FocusOptionState extends State<FocusOption> {
               ),
               Flexible(
                 child: RadioListTile(
+                    activeColor: const Color(0xFFFF7720),
                     title: Text('5x5',
                         style: TextStyle(fontSize: 14, color: Colors.white)),
                     value: 2,
@@ -417,6 +464,7 @@ class _FocusOptionState extends State<FocusOption> {
             children: <Widget>[
               Flexible(
                 child: RadioListTile(
+                    activeColor: const Color(0xFFFF7720),
                     title: Text('6x6',
                         style: TextStyle(fontSize: 14, color: Colors.white)),
                     value: 3,
@@ -427,6 +475,7 @@ class _FocusOptionState extends State<FocusOption> {
               ),
               Flexible(
                 child: RadioListTile(
+                    activeColor: const Color(0xFFFF7720),
                     title: Text('7x7',
                         style: TextStyle(fontSize: 14, color: Colors.white)),
                     value: 4,
@@ -437,6 +486,7 @@ class _FocusOptionState extends State<FocusOption> {
               ),
               Flexible(
                 child: RadioListTile(
+                    activeColor: const Color(0xFFFF7720),
                     title: Text('8x8',
                         style: TextStyle(fontSize: 14, color: Colors.white)),
                     value: 5,
@@ -504,7 +554,7 @@ class _ShareInherit extends InheritedWidget {
   }
 }
 
-//辅助工类 筛选游戏
+//辅助工类 筛选���戏
 
 class GameAssistant {
   @required

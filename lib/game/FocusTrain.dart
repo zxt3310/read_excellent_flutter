@@ -5,7 +5,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:read_excellent/Tools/UIDefine.dart';
+import '../Tools/UIDefine.dart';
 
 const List<String> words = [
   '可',
@@ -108,30 +108,70 @@ class FocusTrainState extends State<FocusTrain> {
                 ? _getIntPool()
                 : words.sublist(0, size * size),
             counted: 0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text('$numInfo',
-                    style: TextStyle(fontSize: 14, color: Colors.black)),
-                Offstage(
-                    offstage: ctx == GameCtx.ctxNum,
-                    child: Text('$rules',
-                        style: TextStyle(fontSize: 14, color: Colors.black))),
-                Container(
-                  width: MediaQuery.of(context).size.height * 0.7,
-                  height: MediaQuery.of(context).size.height * 0.7 + 25,
-                  child: GridView.count(
-                      physics: NeverScrollableScrollPhysics(),
-                      mainAxisSpacing: 1,
-                      crossAxisSpacing: 1,
-                      crossAxisCount: size,
-                      children: _datasource),
-                ),
-                Padding(padding: EdgeInsets.all(10)),
-                CountDownTimer(_timeLimit())
-              ],
-            )));
+            child: Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: const AssetImage('images/bg.png'),
+                        fit: BoxFit.fill)),
+                child: Container(
+                    padding: EdgeInsets.all(30),
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: const Color(0xFFE8DFD6),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                width: 12, color: const Color(0xFFFF7720))),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text('$numInfo',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.black)),
+                            Offstage(
+                                offstage: ctx == GameCtx.ctxNum,
+                                child: Text('$rules',
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.black))),
+                            Container(
+                              width: MediaQuery.of(context).size.height * 0.65,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.65 + 25,
+                              child: GridView.count(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  mainAxisSpacing: 1,
+                                  crossAxisSpacing: 1,
+                                  crossAxisCount: size,
+                                  children: _datasource),
+                            ),
+                            Padding(padding: EdgeInsets.all(5)),
+                            Stack(
+                              children: <Widget>[
+                                Center(child: CountDownTimer(_timeLimit())),
+                                Align(
+                                  alignment: Alignment(0.8, 0),
+                                  child: FlatButton(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Image.asset('images/icon_back.png'),
+                                        SizedBox(width: 10),
+                                        Text('退出训练',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                decoration:
+                                                    TextDecoration.none)),
+                                      ],
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ))))));
   }
 
   int _timeLimit() {

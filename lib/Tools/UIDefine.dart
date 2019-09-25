@@ -3,7 +3,7 @@
 enum GameMode {
   modeFast,    //快
   modeNormal,  //普通
-  modeLow      //慢
+  modeLow     //慢
 }
 
 enum GameCtx {

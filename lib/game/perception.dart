@@ -101,30 +101,37 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
   Widget build(BuildContext context) {
     lenth = Random.secure().nextInt(8) + 4;
     return Scaffold(
-        backgroundColor: Colors.blueAccent,
-        body: Center(
+        body: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: const AssetImage('images/bg.png'),
+                    fit: BoxFit.fill)),
             child: Padding(
-                padding: EdgeInsets.all(30),
+                padding: EdgeInsets.all(50),
                 child: ShareInherit(
                     answer: lenth,
                     child: Container(
-                      color: Colors.yellow,
+                      decoration: BoxDecoration(
+                          color: const Color(0xFFE8DFD6),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              width: 12, color: const Color(0xFFFF7720))),
                       child: Stack(children: _getDataSource()),
                     )))));
   }
 
   List<Widget> _getDataSource() {
-    int ran = Random.secure().nextInt(pics.length-1);
+    int ran = Random.secure().nextInt(pics.length - 1);
     List source = List.generate(lenth, (int index) {
       switch (content) {
         case GameCtx.ctxNum:
           return Random.secure().nextInt(89) + 10;
           break;
         case GameCtx.ctxStr:
-          return words[Random.secure().nextInt(words.length-1)];
+          return words[Random.secure().nextInt(words.length - 1)];
           break;
         case GameCtx.ctxGraphic:
-          return pics[Random.secure().nextInt(pics.length-1)];
+          return pics[Random.secure().nextInt(pics.length - 1)];
           break;
         case GameCtx.ctxGraphicUnion:
           return pics[ran];
@@ -231,41 +238,47 @@ class _QuestAnswerState extends State<_QuestAnswer> {
   bool right = true;
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Dialog(
+    return Scaffold(
+      backgroundColor: Color(0x00),
+      body: Container(
+          margin: EdgeInsets.fromLTRB(30, 10, 30, 30),
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: const AssetImage('images/bg.png'), fit: BoxFit.fill)),
           child: Column(children: <Widget>[
-        SizedBox(height: 50),
-        Text('请选择数字的个数', style: TextStyle(fontSize: 20)),
-        SizedBox(height: 30),
-        Row(
-          children: _getOptions(),
-        ),
-        SizedBox(height: 30),
-        Offstage(
-          offstage: right,
-          child: Text('回答错误', style: TextStyle(fontSize: 18,color: Colors.red))
-        ),
-        Expanded(
-          child: Stack(children: [
-            Align(
-                alignment: Alignment(0.8, 0.6),
-                child: FlatButton(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(Icons.backspace),
-                      SizedBox(width: 10),
-                      Text('退出训练', style: TextStyle(fontSize: 14)),
-                    ],
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(ctxx).pop();
-                  },
-                ))
-          ]),
-        )
-      ])),
+            SizedBox(height: 50),
+            Text('请选择数字的个数',
+                style: TextStyle(fontSize: 20, color: Colors.white)),
+            SizedBox(height: 30),
+            Row(
+              children: _getOptions(),
+            ),
+            SizedBox(height: 30),
+            Offstage(
+                offstage: right,
+                child: Text('回答错误',
+                    style: TextStyle(fontSize: 18, color: Colors.red))),
+            Expanded(
+              child: Stack(children: [
+                Align(
+                    alignment: Alignment(0.8, 0.6),
+                    child: FlatButton(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Image.asset('images/icon_back.png'),
+                          SizedBox(width: 10),
+                          Text('退出训练', style: TextStyle(fontSize: 14)),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(ctxx).pop();
+                      },
+                    ))
+              ]),
+            )
+          ])),
     );
   }
 
@@ -285,11 +298,12 @@ class _QuestAnswerState extends State<_QuestAnswer> {
     List<Widget> res = List.generate(4, (int idx) {
       return Flexible(
           child: RadioListTile(
+        activeColor: const Color(0xFFFF7720),
         value: childrens[idx],
         groupValue: groupValue,
         title: Text(
           '${childrens[idx]}',
-          style: TextStyle(fontSize: 14),
+          style: TextStyle(fontSize: 14, color: Colors.white),
         ),
         onChanged: (value) {
           this.setState(() {
