@@ -136,7 +136,7 @@ class _VisionState extends State<Vision> {
       }
     };
 
-    var oneSec = Duration(milliseconds: 1000);
+    var oneSec = Duration(milliseconds: widget.mode.index*250 + 500);
     _timer = Timer.periodic(oneSec, callBack);
   }
 }
@@ -238,7 +238,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
                         children: <Widget>[
                           Image.asset('images/icon_back.png'),
                           SizedBox(width: 10),
-                          Text('退出训练', style: TextStyle(fontSize: 14)),
+                          Text('返回', style: TextStyle(fontSize: 14)),
                         ],
                       ),
                       onPressed: () {

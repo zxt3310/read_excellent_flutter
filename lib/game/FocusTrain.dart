@@ -121,22 +121,26 @@ class FocusTrainState extends State<FocusTrain> {
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                                 width: 12, color: const Color(0xFFFF7720))),
-                        child: Column(
+                        child:Stack(children: <Widget>[ Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text('$numInfo',
                                 style: TextStyle(
-                                    fontSize: 14, color: Colors.black)),
+                                    fontSize: 14, color: Color(0xFF5b5b5b))),
                             Offstage(
                                 offstage: ctx == GameCtx.ctxNum,
-                                child: Text('$rules',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.black))),
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(30, 5, 30,0),
+                                    child: Text('$rules',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black)))),
                             Container(
                               width: MediaQuery.of(context).size.height * 0.65,
                               height:
-                                  MediaQuery.of(context).size.height * 0.65 + 25,
+                                  MediaQuery.of(context).size.height * 0.65 +
+                                      25,
                               child: GridView.count(
                                   physics: NeverScrollableScrollPhysics(),
                                   mainAxisSpacing: 1,
@@ -144,19 +148,45 @@ class FocusTrainState extends State<FocusTrain> {
                                   crossAxisCount: size,
                                   children: _datasource),
                             ),
-                            Padding(padding: EdgeInsets.all(5)),
-                            Stack(
-                              children: <Widget>[
-                                Center(child: CountDownTimer(_timeLimit())),
+                            Padding(padding: EdgeInsets.all(3)),
+                            CountDownTimer(_timeLimit())
+                            // Stack(
+                            //   children: <Widget>[
+                            //     Center(child: CountDownTimer(_timeLimit())),
+                            //     Align(
+                            //       alignment: Alignment(0.8, 0),
+                            //       child: FlatButton(
+                            //         child: Row(
+                            //           mainAxisSize: MainAxisSize.min,
+                            //           children: <Widget>[
+                            //             Image.asset('images/icon_back.png'),
+                            //             SizedBox(width: 10),
+                            //             Text('返回',
+                            //                 style: TextStyle(
+                            //                     fontSize: 14,
+                            //                     decoration:
+                            //                         TextDecoration.none)),
+                            //           ],
+                            //         ),
+                            //         onPressed: () {
+                            //           Navigator.of(context).pop();
+                            //         },
+                            //       ),
+                            //     )
+                            //   ],
+                            // )
+                          ],
+                        ),
+                       
                                 Align(
-                                  alignment: Alignment(0.8, 0),
+                                  alignment: Alignment(0.8, 0.95),
                                   child: FlatButton(
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
                                         Image.asset('images/icon_back.png'),
                                         SizedBox(width: 10),
-                                        Text('退出训练',
+                                        Text('返回',
                                             style: TextStyle(
                                                 fontSize: 14,
                                                 decoration:
@@ -168,10 +198,8 @@ class FocusTrainState extends State<FocusTrain> {
                                     },
                                   ),
                                 )
-                              ],
-                            )
-                          ],
-                        ))))));
+                         
+                        ]))))));
   }
 
   int _timeLimit() {
@@ -260,19 +288,23 @@ class _UnitContainerState extends State<UnitContainer> {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.black, width: 1),
+          border: Border.all(color: Color(0xFFa2a2a2), width: 1),
         ),
         child: Column(
           children: <Widget>[
             Expanded(
                 child: FlatButton(
-              child: Text(
+              child:Text(
                   visable
                       ? ((widget.ctx == GameCtx.ctxNum)
                           ? widget.random.toString()
                           : widget.str)
                       : '',
-                  style: TextStyle(fontSize: 15, color: Colors.red)),
+                  style: TextStyle(fontSize: widget.ctx == GameCtx.ctxNum ?13:16, color: Colors.black),
+                  textAlign: TextAlign.center,
+                  
+                ),
+                  
               onPressed: _punchUnit,
             ))
           ],
@@ -409,21 +441,25 @@ class Sucessed extends StatelessWidget {
     return Center(
         child: Container(
       width: 400,
-      height: 400,
-      color: Colors.white,
+      height: 300,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Colors.white),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Text(over ? '用时：${score.toString()}秒\n太棒了！' : '胜败乃兵家常事，再接再厉',
+          Text(over ? '用时：${score.toString()}秒，太棒了！' : '胜败乃兵家常事，再接再厉',
+              textAlign: TextAlign.center,
               style: TextStyle(
+                  color: Colors.black,
                   fontSize: 18,
-                  decoration: TextDecoration.none,
-                  backgroundColor: Colors.white)),
-          Padding(padding: EdgeInsets.all(10)),
+                  decoration: TextDecoration.none)),
+          Padding(padding: EdgeInsets.all(20)),
           MaterialButton(
-            child: Text('返回上层'),
-            color: Colors.blueAccent,
+            child: Text('返回',style: TextStyle(color: Colors.white)),
+            color: Color(0xFFFF7720),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                ),
             onPressed: () {
               Navigator.of(context).pop();
               Navigator.of(superCtx).pop();

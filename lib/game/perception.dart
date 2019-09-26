@@ -170,9 +170,9 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
   }
 
   void startCount(GameMode curMode) {
-    int sec = curMode.index + 1;
+    int sec = curMode.index*500 + 1000;
 
-    var second = Duration(seconds: sec);
+    var second = Duration(milliseconds: sec);
     var callBack = (Timer tm) {
       tm.cancel();
       showDialog(
@@ -268,7 +268,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
                         children: <Widget>[
                           Image.asset('images/icon_back.png'),
                           SizedBox(width: 10),
-                          Text('退出训练', style: TextStyle(fontSize: 14)),
+                          Text('返回', style: TextStyle(fontSize: 14)),
                         ],
                       ),
                       onPressed: () {

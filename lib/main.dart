@@ -11,6 +11,7 @@ import 'game/perception.dart';
 import 'game/visionTrain.dart';
 import 'game/vistaExtent.dart';
 
+
 EventBus eventBus = EventBus();
 const List menu = [
   ['数字舒尔特表格训练', '文字舒尔特表格训练'],
@@ -20,6 +21,8 @@ const List menu = [
 ];
 
 void main() {
+
+  WidgetsFlutterBinding.ensureInitialized();
   // 强制横屏
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
@@ -130,7 +133,7 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
                 side: BorderSide(width: 6, color: Color(0xFFFFC85F))),
             onPressed: _btnPress,
           ),
-          SizedBox(height: 3),
+          SizedBox(height: 2),
           Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
@@ -231,6 +234,7 @@ class GameDetailView extends StatefulWidget {
 class _GameDetailViewState extends State<GameDetailView> {
   int superIdx = -1;
   int childIdx = -1;
+  static const platform = const MethodChannel('Read_excellent');
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -247,13 +251,14 @@ class _GameDetailViewState extends State<GameDetailView> {
                   children: <Widget>[
                     Image.asset('images/icon_back.png'),
                     SizedBox(width: 10),
-                    Text('退出',
+                    Text('返回',
                         style: TextStyle(
                             fontSize: 14, decoration: TextDecoration.none)),
                   ],
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  //Navigator.of(context).pop();
+                  platform.invokeMethod('popRoute');
                 },
               )
             ]),
@@ -605,17 +610,17 @@ class GameAssistant {
             wid = VistaTrain(shape: RectShape.shapeCycle, mode: mode);
             break;
           default:
-            wid = VistaTrain(shape: RectShape.shapeRoundRect);
+            wid = VistaTrain(shape: RectShape.shapeRoundRect,mode: mode,);
             break;
         }
         break;
       case 3:
         switch (childIdx) {
           case 0:
-            wid = Vision(path: GamePath.pathN);
+            wid = Vision(path: GamePath.pathN,mode: mode);
             break;
           case 1:
-            wid = Vision(path: GamePath.pathZ);
+            wid = Vision(path: GamePath.pathZ,mode:mode);
             break;
           default:
         }

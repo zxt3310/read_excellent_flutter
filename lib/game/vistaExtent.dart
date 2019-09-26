@@ -32,7 +32,7 @@ class VistaTrain extends StatelessWidget {
                       children: <Widget>[
                         Image.asset('images/icon_back.png'),
                         SizedBox(width: 10),
-                        Text('退出训练',
+                        Text('返回',
                             style: TextStyle(
                                 fontSize: 14,
                                 decoration: TextDecoration.none)),
@@ -71,7 +71,7 @@ class _VistaRectState extends State<VistaRect> {
         height: dr,
         decoration: dr > 20
             ? BoxDecoration(
-                border: Border.all(width: 2, color: Colors.black),
+                border: Border.all(width: 2, color: Color(0xFFFF7720)),
                 borderRadius: widget.shape == RectShape.shapeCycle
                     ? BorderRadius.circular(dr / 2)
                     : BorderRadius.circular(0))
@@ -88,14 +88,14 @@ class _VistaRectState extends State<VistaRect> {
   }
 
   void startVis() {
-    var oneSec = Duration(seconds: widget.mode.index + 1);
+    var oneSec = Duration(milliseconds: widget.mode.index*250 + 500);
     var callBack = (timer) {
       if (count == 4) {
         dr = cdr;
         count = 1;
         this.setState(() {});
       } else {
-        dr = count * 8 * cdr;
+        dr = count * 7.5 * cdr;
         count += 1;
         this.setState(() {});
       }
