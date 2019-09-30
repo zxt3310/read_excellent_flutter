@@ -129,7 +129,7 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
                     color: hide ? Colors.white : Color(0xFFF99A2F))),
             color: hide ? Color(0xFFF99A2F) : Colors.white,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(30),
                 side: BorderSide(width: 6, color: Color(0xFFFFC85F))),
             onPressed: _btnPress,
           ),
@@ -240,7 +240,7 @@ class _GameDetailViewState extends State<GameDetailView> {
     return Container(
       child: Container(
           child: Padding(
-        padding: const EdgeInsets.fromLTRB(50, 30, 50, 30),
+        padding: const EdgeInsets.fromLTRB(50, 20, 50, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -295,8 +295,8 @@ class _GameDetailViewState extends State<GameDetailView> {
                                 children: <Widget>[
                               FlatButton(
                                 child: Container(
-                                    width: 182,
-                                    height: 80,
+                                    width: 162,
+                                    height: 70,
                                     decoration: BoxDecoration(
                                         image: DecorationImage(
                                             image: const AssetImage(

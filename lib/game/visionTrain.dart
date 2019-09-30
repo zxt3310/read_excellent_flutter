@@ -204,6 +204,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
 
   List childrens;
   final Image target;
+  bool right = true;
   _QuestAnswerState(this.answer, this.ctxx, this.target);
 
   int groupValue;
@@ -228,6 +229,11 @@ class _QuestAnswerState extends State<_QuestAnswer> {
             Row(
               children: _getOptions(),
             ),
+            SizedBox(height: 30),
+            Offstage(
+                offstage: right,
+                child: Text('回答错误',
+                    style: TextStyle(fontSize: 18, color: Colors.red))),
             Expanded(
               child: Stack(children: [
                 Align(
@@ -280,7 +286,8 @@ class _QuestAnswerState extends State<_QuestAnswer> {
         onChanged: (value) {
           this.setState(() {
             groupValue = childrens[idx];
-            if (groupValue == answer) {
+            right = groupValue == answer;
+            if (right) {
               Navigator.of(context).pop();
               eventBus.fire(ResetNotify());
             }

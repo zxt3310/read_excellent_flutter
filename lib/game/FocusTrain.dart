@@ -65,7 +65,7 @@ const List<String> words = [
   '得',
   '颧',
   '霾',
-  '黯',
+  '贺',
   '籍',
   '蹲',
   '麓',
@@ -121,84 +121,59 @@ class FocusTrainState extends State<FocusTrain> {
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                                 width: 12, color: const Color(0xFFFF7720))),
-                        child:Stack(children: <Widget>[ Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('$numInfo',
-                                style: TextStyle(
-                                    fontSize: 14, color: Color(0xFF5b5b5b))),
-                            Offstage(
-                                offstage: ctx == GameCtx.ctxNum,
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB(30, 5, 30,0),
-                                    child: Text('$rules',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black)))),
-                            Container(
-                              width: MediaQuery.of(context).size.height * 0.65,
-                              height:
-                                  MediaQuery.of(context).size.height * 0.65 +
-                                      25,
-                              child: GridView.count(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  mainAxisSpacing: 1,
-                                  crossAxisSpacing: 1,
-                                  crossAxisCount: size,
-                                  children: _datasource),
+                        child: Stack(children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text('$numInfo',
+                                  style: TextStyle(
+                                      fontSize: 14, color: Color(0xFF5b5b5b))),
+                              Offstage(
+                                  offstage: ctx == GameCtx.ctxNum,
+                                  child: Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(30, 5, 30, 0),
+                                      child: Text('$rules',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black)))),
+                              Container(
+                                width:
+                                    MediaQuery.of(context).size.height * 0.65,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.65 +
+                                        25,
+                                child: GridView.count(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    mainAxisSpacing: 1,
+                                    crossAxisSpacing: 1,
+                                    crossAxisCount: size,
+                                    children: _datasource),
+                              ),
+                              SizedBox(height: 5),
+                              CountDownTimer(_timeLimit())
+                            ],
+                          ),
+                          Align(
+                            alignment: Alignment(0.8, 0.95),
+                            child: FlatButton(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Image.asset('images/icon_back.png'),
+                                  SizedBox(width: 10),
+                                  Text('返回',
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          decoration: TextDecoration.none)),
+                                ],
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
                             ),
-                            Padding(padding: EdgeInsets.all(3)),
-                            CountDownTimer(_timeLimit())
-                            // Stack(
-                            //   children: <Widget>[
-                            //     Center(child: CountDownTimer(_timeLimit())),
-                            //     Align(
-                            //       alignment: Alignment(0.8, 0),
-                            //       child: FlatButton(
-                            //         child: Row(
-                            //           mainAxisSize: MainAxisSize.min,
-                            //           children: <Widget>[
-                            //             Image.asset('images/icon_back.png'),
-                            //             SizedBox(width: 10),
-                            //             Text('返回',
-                            //                 style: TextStyle(
-                            //                     fontSize: 14,
-                            //                     decoration:
-                            //                         TextDecoration.none)),
-                            //           ],
-                            //         ),
-                            //         onPressed: () {
-                            //           Navigator.of(context).pop();
-                            //         },
-                            //       ),
-                            //     )
-                            //   ],
-                            // )
-                          ],
-                        ),
-                       
-                                Align(
-                                  alignment: Alignment(0.8, 0.95),
-                                  child: FlatButton(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Image.asset('images/icon_back.png'),
-                                        SizedBox(width: 10),
-                                        Text('返回',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                decoration:
-                                                    TextDecoration.none)),
-                                      ],
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                )
-                         
+                          )
                         ]))))));
   }
 
@@ -239,10 +214,11 @@ class FocusTrainState extends State<FocusTrain> {
     List<UnitContainer> containers =
         List<UnitContainer>.generate(pow(size, 2), (int index) {
       int ran;
-      do {
-        ran = Random.secure().nextInt(size * size);
-      } while (!pool.contains(ran));
-
+      if (pool.length == 1) {
+        ran = pool.first;
+      } else {
+        ran = pool[Random.secure().nextInt(pool.length - 1)];
+      }
       pool.remove(ran);
       return UnitContainer(
         random: ran,
@@ -256,13 +232,13 @@ class FocusTrainState extends State<FocusTrain> {
     List pool = words.sublist(0, size * size);
     List<UnitContainer> containers =
         List<UnitContainer>.generate(pow(size, 2), (int index) {
-      int ran;
       String str;
-      do {
-        ran = Random.secure().nextInt(size * size);
-        str = words[ran];
-      } while (!pool.contains(str));
 
+      if(pool.length == 1){
+        str = pool.first;
+      }else{
+        str = pool[Random.secure().nextInt(pool.length - 1)];
+      }
       pool.remove(str);
       return UnitContainer(
         str: str,
@@ -294,17 +270,17 @@ class _UnitContainerState extends State<UnitContainer> {
           children: <Widget>[
             Expanded(
                 child: FlatButton(
-              child:Text(
-                  visable
-                      ? ((widget.ctx == GameCtx.ctxNum)
-                          ? widget.random.toString()
-                          : widget.str)
-                      : '',
-                  style: TextStyle(fontSize: widget.ctx == GameCtx.ctxNum ?13:16, color: Colors.black),
-                  textAlign: TextAlign.center,
-                  
-                ),
-                  
+              child: Text(
+                visable
+                    ? ((widget.ctx == GameCtx.ctxNum)
+                        ? widget.random.toString()
+                        : widget.str)
+                    : '',
+                style: TextStyle(
+                    fontSize: widget.ctx == GameCtx.ctxNum ? 13 : 16,
+                    color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
               onPressed: _punchUnit,
             ))
           ],
@@ -442,7 +418,8 @@ class Sucessed extends StatelessWidget {
         child: Container(
       width: 400,
       height: 300,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Colors.white),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20), color: Colors.white),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -455,11 +432,11 @@ class Sucessed extends StatelessWidget {
                   decoration: TextDecoration.none)),
           Padding(padding: EdgeInsets.all(20)),
           MaterialButton(
-            child: Text('返回',style: TextStyle(color: Colors.white)),
+            child: Text('返回', style: TextStyle(color: Colors.white)),
             color: Color(0xFFFF7720),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-                ),
+              borderRadius: BorderRadius.circular(10),
+            ),
             onPressed: () {
               Navigator.of(context).pop();
               Navigator.of(superCtx).pop();
