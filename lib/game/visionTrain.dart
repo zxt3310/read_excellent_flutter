@@ -38,7 +38,7 @@ class _VisionState extends State<Vision> {
         padding: const EdgeInsets.all(50),
         child: Container(
           decoration: BoxDecoration(
-              color: const Color(0xFFE8DFD6),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(width: 12, color: const Color(0xFFFF7720))),
           child: Stack(

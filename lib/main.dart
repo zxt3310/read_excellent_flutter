@@ -11,7 +11,6 @@ import 'game/perception.dart';
 import 'game/visionTrain.dart';
 import 'game/vistaExtent.dart';
 
-
 EventBus eventBus = EventBus();
 const List menu = [
   ['数字舒尔特表格训练', '文字舒尔特表格训练'],
@@ -21,7 +20,6 @@ const List menu = [
 ];
 
 void main() {
-
   WidgetsFlutterBinding.ensureInitialized();
   // 强制横屏
   SystemChrome.setPreferredOrientations(
@@ -64,7 +62,7 @@ class HomeView extends StatelessWidget {
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(
-                    color: const Color(0xFFF99A2F),
+                    color: const Color(0xFFF5A622),
                     borderRadius: BorderRadius.horizontal(
                         left: Radius.zero, right: Radius.circular(60))),
                 width: MediaQuery.of(context).size.width / 4,
@@ -136,8 +134,7 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
           SizedBox(height: 2),
           Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  color: const Color(0xFFE8DFD6)),
+                  borderRadius: BorderRadius.circular(18), color: Colors.white),
               child: Offstage(
                 offstage: hide,
                 child: Column(
@@ -234,6 +231,7 @@ class GameDetailView extends StatefulWidget {
 class _GameDetailViewState extends State<GameDetailView> {
   int superIdx = -1;
   int childIdx = -1;
+  int modeIdx = 0;
   static const platform = const MethodChannel('Read_excellent');
   @override
   Widget build(BuildContext context) {
@@ -265,17 +263,29 @@ class _GameDetailViewState extends State<GameDetailView> {
             Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: Color(0xFFE8DFD6),
+                    color: Colors.white,
                     border: Border.all(width: 12, color: Color(0xFFFF7720))),
                 width: MediaQuery.of(context).size.width / 3,
                 height: MediaQuery.of(context).size.height / 1.6,
                 child: Center(
-                  child: Container(
-                      child: Text(_scribe(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(_scribe(),
                           style: TextStyle(
-                              fontSize: 28,
-                              color: Colors.white,
-                              decoration: TextDecoration.none))),
+                              fontSize: 36,
+                              color: Colors.black,
+                              decoration: TextDecoration.none)),
+                      Container(
+                        width: 400,
+                        height: 300,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: const AssetImage("images/shuzi/8X8.png"),
+                                fit: BoxFit.fill)),
+                      )
+                    ],
+                  ),
                 )),
             SizedBox(height: 20),
             Expanded(
@@ -373,7 +383,7 @@ class _ModeOptionState extends State<ModeOption> {
             child: RadioListTile(
                 activeColor: const Color(0xFFFF7720),
                 title: Text('快',
-                    style: TextStyle(fontSize: 14, color: Colors.white)),
+                    style: TextStyle(fontSize: 18, color: Colors.white)),
                 value: 0,
                 groupValue: groupValue,
                 onChanged: (value) {
@@ -384,7 +394,7 @@ class _ModeOptionState extends State<ModeOption> {
             child: RadioListTile(
                 activeColor: const Color(0xFFFF7720),
                 title: Text('中',
-                    style: TextStyle(fontSize: 14, color: Colors.white)),
+                    style: TextStyle(fontSize: 18, color: Colors.white)),
                 value: 1,
                 groupValue: groupValue,
                 onChanged: (value) {
@@ -395,7 +405,7 @@ class _ModeOptionState extends State<ModeOption> {
             child: RadioListTile(
                 activeColor: const Color(0xFFFF7720),
                 title: Text('慢',
-                    style: TextStyle(fontSize: 14, color: Colors.white)),
+                    style: TextStyle(fontSize: 18, color: Colors.white)),
                 value: 2,
                 groupValue: groupValue,
                 onChanged: (value) {
@@ -434,7 +444,7 @@ class _FocusOptionState extends State<FocusOption> {
                 child: RadioListTile(
                     activeColor: const Color(0xFFFF7720),
                     title: Text('3x3',
-                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                        style: TextStyle(fontSize: 18, color: Colors.white)),
                     value: 0,
                     groupValue: groupValue,
                     onChanged: (value) {
@@ -445,7 +455,7 @@ class _FocusOptionState extends State<FocusOption> {
                 child: RadioListTile(
                     activeColor: const Color(0xFFFF7720),
                     title: Text('4x4',
-                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                        style: TextStyle(fontSize: 18, color: Colors.white)),
                     value: 1,
                     groupValue: groupValue,
                     onChanged: (value) {
@@ -456,7 +466,7 @@ class _FocusOptionState extends State<FocusOption> {
                 child: RadioListTile(
                     activeColor: const Color(0xFFFF7720),
                     title: Text('5x5',
-                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                        style: TextStyle(fontSize: 18, color: Colors.white)),
                     value: 2,
                     groupValue: groupValue,
                     onChanged: (value) {
@@ -471,7 +481,7 @@ class _FocusOptionState extends State<FocusOption> {
                 child: RadioListTile(
                     activeColor: const Color(0xFFFF7720),
                     title: Text('6x6',
-                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                        style: TextStyle(fontSize: 18, color: Colors.white)),
                     value: 3,
                     groupValue: groupValue,
                     onChanged: (value) {
@@ -482,7 +492,7 @@ class _FocusOptionState extends State<FocusOption> {
                 child: RadioListTile(
                     activeColor: const Color(0xFFFF7720),
                     title: Text('7x7',
-                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                        style: TextStyle(fontSize: 18, color: Colors.white)),
                     value: 4,
                     groupValue: groupValue,
                     onChanged: (value) {
@@ -493,7 +503,7 @@ class _FocusOptionState extends State<FocusOption> {
                 child: RadioListTile(
                     activeColor: const Color(0xFFFF7720),
                     title: Text('8x8',
-                        style: TextStyle(fontSize: 14, color: Colors.white)),
+                        style: TextStyle(fontSize: 18, color: Colors.white)),
                     value: 5,
                     groupValue: groupValue,
                     onChanged: (value) {
@@ -610,17 +620,20 @@ class GameAssistant {
             wid = VistaTrain(shape: RectShape.shapeCycle, mode: mode);
             break;
           default:
-            wid = VistaTrain(shape: RectShape.shapeRoundRect,mode: mode,);
+            wid = VistaTrain(
+              shape: RectShape.shapeRoundRect,
+              mode: mode,
+            );
             break;
         }
         break;
       case 3:
         switch (childIdx) {
           case 0:
-            wid = Vision(path: GamePath.pathN,mode: mode);
+            wid = Vision(path: GamePath.pathN, mode: mode);
             break;
           case 1:
-            wid = Vision(path: GamePath.pathZ,mode:mode);
+            wid = Vision(path: GamePath.pathZ, mode: mode);
             break;
           default:
         }
