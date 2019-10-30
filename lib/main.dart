@@ -16,7 +16,7 @@ const List menu = [
   ['数字舒尔特表格训练', '文字舒尔特表格训练'],
   ['数字感知训练', '中文感知训练', '第一图形感知训练', '多图形感知训练'],
   ['矩形扩展训练', '圆形扩展训练' /*, '数字扩展训练', '文字扩展训练'*/],
-  ['N字形移动训练', '之字形移动训练' /*, '圆形移动训练'*/]
+  ['N字形移动训练', '之字形移动训练', '波浪移动训练', '交叉移动训练']
 ];
 
 void main() {
@@ -194,8 +194,11 @@ class _ChildGameSelState extends State<ChildGameSel> {
           style: TextStyle(fontSize: 16), textAlign: TextAlign.center),
       textColor: pressed ? Color(0xFFFF7720) : Colors.black,
       onPressed: () {
-        eventBus.fire(
-            ChildSelEvent(childIdx: widget.childIdx, subIdx: widget.superIdx));
+        int modeId = _ShareInherit.of(context).gameSize;
+        eventBus.fire(ChildSelEvent(
+            childIdx: widget.childIdx,
+            subIdx: widget.superIdx,
+            modeIdx: modeId));
         _ShareInherit.of(context).superIdx = widget.superIdx;
         _ShareInherit.of(context).childIdx = widget.childIdx;
       },
@@ -281,7 +284,7 @@ class _GameDetailViewState extends State<GameDetailView> {
                         height: 300,
                         decoration: BoxDecoration(
                             image: DecorationImage(
-                                image: const AssetImage("images/shuzi/8X8.png"),
+                                image: AssetImage(_shortCutName()),
                                 fit: BoxFit.fill)),
                       )
                     ],
@@ -334,6 +337,67 @@ class _GameDetailViewState extends State<GameDetailView> {
     return childIdx == -1 ? '欢迎来到训练场' : '${menu[superIdx][childIdx]}';
   }
 
+  String _shortCutName() {
+    if (superIdx == -1) {
+      return 'images/圆形拓展.png';
+    }
+    String name;
+    switch (superIdx) {
+      case 0:
+        if (childIdx == 0) {
+          name = 'images/shuzi/${modeIdx}X$modeIdx.png';
+        } else {
+          name = 'images/wenzi/${modeIdx}X$modeIdx.png';
+        }
+        break;
+      case 1:
+        switch (childIdx) {
+          case 0:
+            name = 'images/数字感知.png';
+            break;
+          case 1:
+            name = 'images/中文感知.png';
+            break;
+          case 2:
+            name = 'images/第一图形感知.png';
+            break;
+          case 3:
+            name = 'images/多图形感知.png';
+            break;
+          default:
+        }
+        break;
+      case 2:
+        switch (childIdx) {
+          case 0:
+            name = 'images/矩形拓展.png';
+            break;
+          case 1:
+            name = 'images/圆形拓展.png';
+            break;
+        }
+        break;
+      case 3:
+        switch (childIdx) {
+          case 0:
+            name = 'images/N字形.png';
+            break;
+          case 1:
+            name = 'images/之字形.png';
+            break;
+          case 2:
+            name = 'images/波浪形.png';
+            break;
+          case 3:
+            name = 'images/N字形.png';
+            break;
+        }
+        break;
+      default:
+    }
+    return name;
+  }
+
   void _startGame() {
     int supIdx = _ShareInherit.of(context).superIdx;
     int chilIdx = _ShareInherit.of(context).childIdx;
@@ -355,6 +419,7 @@ class _GameDetailViewState extends State<GameDetailView> {
     subscription = eventBus.on<ChildSelEvent>().listen((event) {
       superIdx = event.subIdx;
       childIdx = event.childIdx;
+      modeIdx = event.modeIdx;
       this.setState(() {});
     });
   }
@@ -521,6 +586,8 @@ class _FocusOptionState extends State<FocusOption> {
     groupValue = value;
     this.setState(() {});
     _ShareInherit.of(context).gameSize = value + 3;
+    int cid = _ShareInherit.of(context).childIdx;
+    eventBus.fire(ChildSelEvent(childIdx: cid, subIdx: 0, modeIdx: value + 3));
   }
 }
 
@@ -538,7 +605,9 @@ class ChildSelEvent {
   int subIdx;
   @required
   int childIdx;
-  ChildSelEvent({this.subIdx, this.childIdx});
+
+  int modeIdx = 3;
+  ChildSelEvent({this.subIdx, this.childIdx, this.modeIdx});
 }
 
 class ModeRadioEvent {
@@ -634,6 +703,12 @@ class GameAssistant {
             break;
           case 1:
             wid = Vision(path: GamePath.pathZ, mode: mode);
+            break;
+          case 2:
+            wid = Vision(path: GamePath.pathW, mode: mode);
+            break;
+          case 3:
+            wid = Vision(path: GamePath.pathX, mode: mode);
             break;
           default:
         }

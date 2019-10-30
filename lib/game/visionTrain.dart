@@ -72,13 +72,41 @@ class _VisionState extends State<Vision> {
     }
     // if (path != GamePath.pathX) {
     return List<Widget>.generate(8, (int idx) {
-      double x = -0.75 + idx ~/ 2 * 0.5;
-      double y = (idx % 2 == 0) ? -0.75 : 0.75;
+      double x; //= -0.75 + idx ~/ 2 * 0.5;
+      double y; //= (idx % 2 == 0) ? -0.75 : 0.75;
 
-      if (widget.path == GamePath.pathZ) {
-        double t = x;
-        x = y;
-        y = t;
+      // if (widget.path == GamePath.pathZ) {
+      //   double t = x;
+      //   x = y;
+      //   y = t;
+      // }
+
+      switch (widget.path) {
+        case GamePath.pathN:
+          x = -0.75 + idx ~/ 2 * 0.5;
+          y = (idx % 2 == 0) ? -0.75 : 0.75;
+          break;
+        case GamePath.pathZ:
+          x = (idx % 2 == 0) ? -0.75 : 0.75;
+          y = -0.75 + idx ~/ 2 * 0.5;
+          break;
+        case GamePath.pathW:
+          x = -0.8 + idx * 0.2;
+          y = (idx % 2 == 0) ? -0.75 : 0.75;
+          break;
+        case GamePath.pathX:
+          if (idx%4<2){
+            x = -0.5 * pow(-1, idx);
+            y = -0.75 * pow(-1,idx);
+          }else{
+            x = -0.5 * pow(-1, idx+1);
+            y = 0.75 * pow(-1,idx+1);
+          }
+          
+          break;
+        case GamePath.pathO:
+          break;
+        default:
       }
 
       return Align(
