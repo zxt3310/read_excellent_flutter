@@ -6,6 +6,7 @@ import '../Tools/UIDefine.dart';
 import 'package:event_bus/event_bus.dart';
 
 EventBus eventBus = new EventBus();
+const int numberOfContent = 16; 
 
 class Vision extends StatefulWidget {
   final GamePath path;
@@ -18,7 +19,7 @@ class Vision extends StatefulWidget {
 class _VisionState extends State<Vision> {
   final GamePath path;
   final GameMode mode;
-  int cout = 7;
+  int cout = numberOfContent - 1;
   Timer _timer;
   //答案
   int answer = 0;
@@ -60,51 +61,55 @@ class _VisionState extends State<Vision> {
       Image.asset('images/甜甜圈.png'),
       Image.asset('images/饼干.png')
     ];
-    datalists = List.generate(8, (int index) {
+    datalists = List.generate(numberOfContent, (int index) {
       return pics[Random.secure().nextInt(pics.length - 1)];
     });
-    target = datalists[Random.secure().nextInt(7)];
+    target = datalists[Random.secure().nextInt(numberOfContent - 1)];
     answer = 0;
     for (Image obj in datalists) {
       if (obj == target) {
         answer++;
       }
     }
-    // if (path != GamePath.pathX) {
-    return List<Widget>.generate(8, (int idx) {
-      double x; //= -0.75 + idx ~/ 2 * 0.5;
-      double y; //= (idx % 2 == 0) ? -0.75 : 0.75;
-
-      // if (widget.path == GamePath.pathZ) {
-      //   double t = x;
-      //   x = y;
-      //   y = t;
-      // }
+    return List<Widget>.generate(numberOfContent, (int idx) {
+      double x; 
+      double y; 
 
       switch (widget.path) {
         case GamePath.pathN:
-          x = -0.75 + idx ~/ 2 * 0.5;
-          y = (idx % 2 == 0) ? -0.75 : 0.75;
+          int a = idx%8;
+          x = -0.75 + a ~/ 2 * 0.5;
+          y = (a % 2 == 0) ? -0.75 : 0.75;
           break;
         case GamePath.pathZ:
-          x = (idx % 2 == 0) ? -0.75 : 0.75;
-          y = -0.75 + idx ~/ 2 * 0.5;
+          int a = idx%8;
+          x = (a % 2 == 0) ? -0.75 : 0.75;
+          y = -0.75 + a ~/ 2 * 0.5;
           break;
         case GamePath.pathW:
-          x = -0.8 + idx * 0.2;
-          y = (idx % 2 == 0) ? -0.75 : 0.75;
+          int a = idx%9;
+          x = -0.8 + a * 0.2;
+          y = (a % 2 == 0) ? -0.75 : 0.75;
           break;
         case GamePath.pathX:
-          if (idx%4<2){
+          int a = idx%8;
+          if (a%4<2){
             x = -0.5 * pow(-1, idx);
             y = -0.75 * pow(-1,idx);
           }else{
             x = -0.5 * pow(-1, idx+1);
             y = 0.75 * pow(-1,idx+1);
           }
-          
           break;
         case GamePath.pathO:
+          int i = idx%8;
+          if(i<4){
+            x = -0.8 + i*0.4;
+            y = -sqrt(0.65 - pow(x, 2));
+          }else{
+            x = 0.8 - (i-4)*0.4;
+            y = sqrt(0.65 - pow(x, 2));
+          }
           break;
         default:
       }
@@ -113,8 +118,6 @@ class _VisionState extends State<Vision> {
           child: _UnitView(icon: datalists[idx], index: idx),
           alignment: Alignment(x, y));
     });
-    // }
-    // return null;
   }
 
   @override
@@ -129,7 +132,7 @@ class _VisionState extends State<Vision> {
   void initState() {
     subscription = eventBus.on<ResetNotify>().listen((evnet) {
       this.setState(() {
-        cout = 7;
+        cout = numberOfContent - 1;
       });
     });
     super.initState();
@@ -159,7 +162,7 @@ class _VisionState extends State<Vision> {
               return _QuestAnswer(answer, context, target);
             });
       } else {
-        eventBus.fire(FreshEvent((7 - cout), datalists));
+        eventBus.fire(FreshEvent((numberOfContent - 1 - cout), datalists));
         cout -= 1;
       }
     };
@@ -292,7 +295,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
     do {
       do {
         source = List.generate(4, (int idx) {
-          return Random.secure().nextInt(7) + 1;
+          return Random.secure().nextInt(numberOfContent - 1) + 1;
         });
       } while (!source.contains(answer));
     } while (Set.from(source).length < 4);

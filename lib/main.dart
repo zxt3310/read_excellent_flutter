@@ -16,7 +16,7 @@ const List menu = [
   ['数字舒尔特表格训练', '文字舒尔特表格训练'],
   ['数字感知训练', '中文感知训练', '第一图形感知训练', '多图形感知训练'],
   ['矩形扩展训练', '圆形扩展训练' /*, '数字扩展训练', '文字扩展训练'*/],
-  ['N字形移动训练', '之字形移动训练', '波浪移动训练', '交叉移动训练']
+  ['N字形移动训练', '之字形移动训练', '波浪移动训练', '交叉移动训练', '圆形移动训练']
 ];
 
 void main() {
@@ -339,7 +339,7 @@ class _GameDetailViewState extends State<GameDetailView> {
 
   String _shortCutName() {
     if (superIdx == -1) {
-      return 'images/圆形拓展.png';
+      return 'images/blank.png';
     }
     String name;
     switch (superIdx) {
@@ -389,7 +389,10 @@ class _GameDetailViewState extends State<GameDetailView> {
             name = 'images/波浪形.png';
             break;
           case 3:
-            name = 'images/N字形.png';
+            name = 'images/交叉.png';
+            break;
+          case 4:
+            name = 'images/圆形移动.png';
             break;
         }
         break;
@@ -532,7 +535,7 @@ class _FocusOptionState extends State<FocusOption> {
                     activeColor: const Color(0xFFFF7720),
                     title: Text('5x5',
                         style: TextStyle(fontSize: 18, color: Colors.white)),
-                    value: 2,
+                    value: 2, 
                     groupValue: groupValue,
                     onChanged: (value) {
                       changed(value);
@@ -709,6 +712,9 @@ class GameAssistant {
             break;
           case 3:
             wid = Vision(path: GamePath.pathX, mode: mode);
+            break;
+          case 4:
+            wid = Vision(path: GamePath.pathO, mode: mode);
             break;
           default:
         }
