@@ -10,12 +10,17 @@ import 'game/FocusTrain.dart';
 import 'game/perception.dart';
 import 'game/visionTrain.dart';
 import 'game/vistaExtent.dart';
+import 'game/contentExtent.dart';
 
 EventBus eventBus = EventBus();
 const List menu = [
   ['数字舒尔特表格训练', '文字舒尔特表格训练'],
   ['数字感知训练', '中文感知训练', '第一图形感知训练', '多图形感知训练'],
-  ['矩形扩展训练', '圆形扩展训练' /*, '数字扩展训练', '文字扩展训练'*/],
+  [
+    '矩形扩展训练',
+    '圆形扩展训练',
+    '数字扩展训练', '文字扩展训练'
+  ],
   ['N字形移动训练', '之字形移动训练', '波浪移动训练', '交叉移动训练', '圆形移动训练']
 ];
 
@@ -375,6 +380,12 @@ class _GameDetailViewState extends State<GameDetailView> {
           case 1:
             name = 'images/圆形拓展.png';
             break;
+          case 2:
+            name = 'images/矩形拓展.png';
+            break;
+          case 3:
+            name = 'images/圆形拓展.png';
+            break;
         }
         break;
       case 3:
@@ -535,7 +546,7 @@ class _FocusOptionState extends State<FocusOption> {
                     activeColor: const Color(0xFFFF7720),
                     title: Text('5x5',
                         style: TextStyle(fontSize: 18, color: Colors.white)),
-                    value: 2, 
+                    value: 2,
                     groupValue: groupValue,
                     onChanged: (value) {
                       changed(value);
@@ -691,6 +702,12 @@ class GameAssistant {
           case 1:
             wid = VistaTrain(shape: RectShape.shapeCycle, mode: mode);
             break;
+          case 2:
+            wid = ContentContainor(ctx: GameCtx.ctxNum, range: 10, mode: mode);
+            break;
+          case 3:
+            wid = ContentContainor(ctx: GameCtx.ctxStr, range: 10, mode: mode);
+            break;
           default:
             wid = VistaTrain(
               shape: RectShape.shapeRoundRect,
@@ -726,3 +743,52 @@ class GameAssistant {
     return wid;
   }
 }
+
+List <String> options = [
+  '每行四个字',
+  '每行五个字',
+  '每行六个字',
+  '每行七个字',
+  '每行八个字',
+  '每行九个字',
+  '每行十个字',
+  '每行十一个字',
+  '每行十二个字'
+];
+
+class ContentExtentOptionWidget extends StatefulWidget {
+  ContentExtentOptionWidget({Key key}) : super(key: key);
+
+  @override
+  _ContentExtentOptionWidgetState createState() => _ContentExtentOptionWidgetState();
+}
+
+class _ContentExtentOptionWidgetState extends State<ContentExtentOptionWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+       child: Column(
+         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+         children: <Widget>[],
+       ),
+    );
+  }
+
+  int groupValue = 4;
+
+  List<Widget> getOptions(){
+    return List.generate(options.length, (idx){
+        return RadioListTile(
+          activeColor: const Color(0xFFFF7720),
+                    title: Text(options[idx],
+                        style: TextStyle(fontSize: 18, color: Colors.white)),
+                    value: idx + 4,
+                    groupValue: groupValue,
+                    onChanged: (value) {
+                      
+                    }
+        );
+    });
+  }
+}
+
