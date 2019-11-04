@@ -16,11 +16,7 @@ EventBus eventBus = EventBus();
 const List menu = [
   ['数字舒尔特表格训练', '文字舒尔特表格训练'],
   ['数字感知训练', '中文感知训练', '第一图形感知训练', '多图形感知训练'],
-  [
-    '矩形扩展训练',
-    '圆形扩展训练',
-    '数字扩展训练', '文字扩展训练'
-  ],
+  ['矩形扩展训练', '圆形扩展训练', '数字扩展训练', '文字扩展训练'],
   ['N字形移动训练', '之字形移动训练', '波浪移动训练', '交叉移动训练', '圆形移动训练']
 ];
 
@@ -47,7 +43,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        unselectedWidgetColor: Colors.white,
+        unselectedWidgetColor: const Color(0xFFFF7720),
       ),
       home: HomeView(),
     ));
@@ -284,14 +280,16 @@ class _GameDetailViewState extends State<GameDetailView> {
                               fontSize: 36,
                               color: Colors.black,
                               decoration: TextDecoration.none)),
-                      Container(
-                        width: 400,
-                        height: 300,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage(_shortCutName()),
-                                fit: BoxFit.fill)),
-                      )
+                      superIdx == 2 && childIdx > 1
+                          ? ContentExtentOptionWidget()
+                          : Container(
+                              width: 400,
+                              height: 300,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(_shortCutName()),
+                                      fit: BoxFit.fill)),
+                            )
                     ],
                   ),
                 )),
@@ -417,9 +415,10 @@ class _GameDetailViewState extends State<GameDetailView> {
     int chilIdx = _ShareInherit.of(context).childIdx;
     GameMode mode = _ShareInherit.of(context).mode;
     int size = _ShareInherit.of(context).gameSize;
+    int contentSize = _ShareInherit.of(context).contentSize;
 
     GameAssistant helper = GameAssistant(
-        childIdx: chilIdx, superIdx: supIdx, mode: mode, gameSize: size);
+        childIdx: chilIdx, superIdx: supIdx, mode: mode, gameSize: size,contentSize: contentSize);
 
     print(helper.getTargetGame());
     Navigator.of(context).push(MaterialPageRoute(
@@ -500,6 +499,7 @@ class _ModeOptionState extends State<ModeOption> {
     groupValue = value;
     this.setState(() {});
     _ShareInherit.of(context).mode = GameMode.values[value];
+    _ShareInherit.of(context).gameSize = 3;
   }
 }
 
@@ -641,6 +641,8 @@ class _ShareInherit extends InheritedWidget {
   GameMode mode = GameMode.modeFast;
   int gameSize = 3;
 
+  int contentSize = 4;
+
   static _ShareInherit of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_ShareInherit)
         as _ShareInherit);
@@ -664,7 +666,9 @@ class GameAssistant {
   final int gameSize;
   final GameMode mode;
 
-  GameAssistant({this.superIdx, this.childIdx, this.gameSize, this.mode});
+  final int contentSize;
+
+  GameAssistant({this.superIdx, this.childIdx, this.gameSize, this.mode,this.contentSize});
 
   Widget getTargetGame() {
     Widget wid;
@@ -703,10 +707,10 @@ class GameAssistant {
             wid = VistaTrain(shape: RectShape.shapeCycle, mode: mode);
             break;
           case 2:
-            wid = ContentContainor(ctx: GameCtx.ctxNum, range: 10, mode: mode);
+            wid = ContentContainor(ctx: GameCtx.ctxNum, range: contentSize, mode: mode);
             break;
           case 3:
-            wid = ContentContainor(ctx: GameCtx.ctxStr, range: 10, mode: mode);
+            wid = ContentContainor(ctx: GameCtx.ctxStr, range: contentSize, mode: mode);
             break;
           default:
             wid = VistaTrain(
@@ -744,7 +748,7 @@ class GameAssistant {
   }
 }
 
-List <String> options = [
+List<String> options = [
   '每行四个字',
   '每行五个字',
   '每行六个字',
@@ -760,35 +764,46 @@ class ContentExtentOptionWidget extends StatefulWidget {
   ContentExtentOptionWidget({Key key}) : super(key: key);
 
   @override
-  _ContentExtentOptionWidgetState createState() => _ContentExtentOptionWidgetState();
+  _ContentExtentOptionWidgetState createState() =>
+      _ContentExtentOptionWidgetState();
 }
 
 class _ContentExtentOptionWidgetState extends State<ContentExtentOptionWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-       child: Column(
-         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-         children: <Widget>[],
-       ),
-    );
+    return 
+        Container(
+          //padding: EdgeInsets.all(20),
+          width: 600,
+          height: 220,
+            child: Wrap(
+      alignment: WrapAlignment.start,
+      spacing: 30,
+      runSpacing: 0,
+      crossAxisAlignment: WrapCrossAlignment.start,
+      direction: Axis.vertical,
+      children: _getOptions(),
+    ));
   }
 
   int groupValue = 4;
 
-  List<Widget> getOptions(){
-    return List.generate(options.length, (idx){
-        return RadioListTile(
-          activeColor: const Color(0xFFFF7720),
-                    title: Text(options[idx],
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
-                    value: idx + 4,
-                    groupValue: groupValue,
-                    onChanged: (value) {
-                      
-                    }
-        );
+  List<Widget> _getOptions() {
+    return List.generate(options.length, (idx) {
+      return Container(
+          width: 200,
+          height: 40,
+          child: RadioListTile(
+              activeColor: const Color(0xFFFF7720),
+              title: Text(options[idx],
+                  style: TextStyle(fontSize: 18, color: Colors.black)),
+              value: idx + 4,
+              groupValue: groupValue,
+              onChanged: (value) {
+                groupValue = value;
+                _ShareInherit.of(context).contentSize = value;
+                this.setState(() {});
+              }));
     });
   }
 }
-
