@@ -25,3 +25,21 @@ enum RectShape {
   shapeCycle,
   shapeRoundRect
 }
+
+
+class BgiManager {
+  String bgi;
+  // 工厂模式
+  factory BgiManager() =>_getInstance();
+  static BgiManager get instance => _getInstance();
+  static BgiManager _instance;
+  BgiManager._internal() {
+    // 初始化
+  }
+  static BgiManager _getInstance() {
+    if (_instance == null) {
+      _instance = new BgiManager._internal();
+    }
+    return _instance;
+  }
+}

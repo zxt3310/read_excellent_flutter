@@ -12,6 +12,8 @@ import 'game/visionTrain.dart';
 import 'game/vistaExtent.dart';
 import 'game/contentExtent.dart';
 
+const platform = const MethodChannel('Read_excellent');
+
 EventBus eventBus = EventBus();
 const List menu = [
   ['数字舒尔特表格训练', '文字舒尔特表格训练'],
@@ -32,6 +34,16 @@ void main() {
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
+  Future <void> _getBgi() async {
+    try{
+      int a = await platform.invokeMethod('getBgi');
+      var bgiMan = BgiManager();
+      bgiMan.bgi = a==3?'第一张图':'第二张图';
+    }on PlatformException catch(e){
+      print(e.message);
+    }
+  }
+  _getBgi();
   runApp(MyApp());
 }
 
@@ -41,6 +53,7 @@ class MyApp extends StatelessWidget {
     return _ShareInherit(
         child: MaterialApp(
       title: 'Flutter Demo',
+      
       theme: ThemeData(
         primarySwatch: Colors.blue,
         unselectedWidgetColor: const Color(0xFFFF7720),
@@ -236,7 +249,7 @@ class _GameDetailViewState extends State<GameDetailView> {
   int superIdx = -1;
   int childIdx = -1;
   int modeIdx = 0;
-  static const platform = const MethodChannel('Read_excellent');
+
   @override
   Widget build(BuildContext context) {
     return Container(
