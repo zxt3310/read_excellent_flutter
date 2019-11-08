@@ -286,9 +286,11 @@ class _GameDetailViewState extends State<GameDetailView> {
                 height: MediaQuery.of(context).size.height / 1.6,
                 child: Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(_scribe(),
+                      superIdx == -1
+                      ?SizedBox(height: 0)
+                      :Text(_scribe(),
                           style: TextStyle(
                               fontSize: 36,
                               color: Colors.black,
@@ -615,6 +617,11 @@ class _FocusOptionState extends State<FocusOption> {
     _ShareInherit.of(context).gameSize = value + 3;
     int cid = _ShareInherit.of(context).childIdx;
     eventBus.fire(ChildSelEvent(childIdx: cid, subIdx: 0, modeIdx: value + 3));
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 }
 
