@@ -25,19 +25,30 @@ class VistaTrain extends StatelessWidget {
                   child: VistaRect(shape, mode),
                 ),
                 Align(
-                  alignment: Alignment(0.8, 0.85),
+                  alignment: Alignment(0.9, 0.85),
                   child: FlatButton(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Image.asset('images/icon_back.png'),
-                        SizedBox(width: 10),
-                        Text('返回',
-                            style: TextStyle(
-                                fontSize: 14,
-                                decoration: TextDecoration.none)),
-                      ],
-                    ),
+                    child: Container(
+                        width: 120,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: const AssetImage('images/an_bg_n.png'),
+                                fit: BoxFit.fill)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                          Container(
+                            width: 14,
+                            height: 14,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: const AssetImage('images/an_back_w.png'),
+                                fit: BoxFit.fill))),
+                          SizedBox(width: 10),
+                          Text('返回',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.white))
+                        ])),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -88,7 +99,7 @@ class _VistaRectState extends State<VistaRect> {
   }
 
   void startVis() {
-    var oneSec = Duration(milliseconds: widget.mode.index*250 + 500);
+    var oneSec = Duration(milliseconds: widget.mode.index * 250 + 500);
     var callBack = (timer) {
       if (count == 4) {
         dr = cdr;

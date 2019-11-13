@@ -170,7 +170,7 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
   }
 
   void startCount(GameMode curMode) {
-    int sec = curMode.index*500 + 1000;
+    int sec = curMode.index * 500 + 1000;
 
     var second = Duration(milliseconds: sec);
     var callBack = (Timer tm) {
@@ -261,21 +261,37 @@ class _QuestAnswerState extends State<_QuestAnswer> {
             Expanded(
               child: Stack(children: [
                 Align(
-                    alignment: Alignment(0.8, 0.6),
-                    child: FlatButton(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Image.asset('images/icon_back.png'),
-                          SizedBox(width: 10),
-                          Text('返回', style: TextStyle(fontSize: 14)),
-                        ],
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.of(ctxx).pop();
-                      },
-                    ))
+                  alignment: Alignment(0.9, 0.85),
+                  child: FlatButton(
+                    child: Container(
+                        width: 120,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: const AssetImage('images/an_bg_n.png'),
+                                fit: BoxFit.fill)),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                  width: 14,
+                                  height: 14,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: const AssetImage(
+                                              'images/an_back_w.png'),
+                                          fit: BoxFit.fill))),
+                              SizedBox(width: 10),
+                              Text('返回',
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.white))
+                            ])),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(ctxx).pop();
+                    },
+                  ),
+                )
               ]),
             )
           ])),
@@ -283,20 +299,20 @@ class _QuestAnswerState extends State<_QuestAnswer> {
   }
 
   String _queStr() {
-      String qstr;
-      switch (widget.content) {
-        case GameCtx.ctxNum:
-          qstr = '请选择数字的数量';
-          break;
-        case GameCtx.ctxStr:
-          qstr = '请选择文字的数量';
-          break;
-        default:
-          qstr = '请选择图片的数量';
-          break;
-      }
-      return qstr;
+    String qstr;
+    switch (widget.content) {
+      case GameCtx.ctxNum:
+        qstr = '请选择数字的数量';
+        break;
+      case GameCtx.ctxStr:
+        qstr = '请选择文字的数量';
+        break;
+      default:
+        qstr = '请选择图片的数量';
+        break;
     }
+    return qstr;
+  }
 
   List _getEnumAry() {
     List source;

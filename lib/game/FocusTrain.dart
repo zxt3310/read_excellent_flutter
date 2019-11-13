@@ -139,12 +139,13 @@ class FocusTrainState extends State<FocusTrain> {
                                               fontSize: 14,
                                               color: Colors.black)))),
                               Container(
+                                color: Colors.black,
                                 width:
                                     MediaQuery.of(context).size.height * 0.65,
                                 height:
-                                    MediaQuery.of(context).size.height * 0.65 +
-                                        25,
+                                    MediaQuery.of(context).size.height * 0.65,
                                 child: GridView.count(
+                                    padding: EdgeInsets.all(2),
                                     physics: NeverScrollableScrollPhysics(),
                                     mainAxisSpacing: 1,
                                     crossAxisSpacing: 1,
@@ -156,19 +157,34 @@ class FocusTrainState extends State<FocusTrain> {
                             ],
                           ),
                           Align(
-                            alignment: Alignment(0.8, 0.95),
+                            alignment: Alignment(0.95, 0.95),
                             child: FlatButton(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Image.asset('images/icon_back.png'),
-                                  SizedBox(width: 10),
-                                  Text('返回',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          decoration: TextDecoration.none)),
-                                ],
-                              ),
+                              child: Container(
+                                  width: 120,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: const AssetImage(
+                                              'images/an_bg_n.png'),
+                                          fit: BoxFit.fill)),
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                            width: 14,
+                                            height: 14,
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: const AssetImage(
+                                                        'images/an_back_w.png'),
+                                                    fit: BoxFit.fill))),
+                                        SizedBox(width: 10),
+                                        Text('返回',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white))
+                                      ])),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
@@ -223,6 +239,7 @@ class FocusTrainState extends State<FocusTrain> {
       return UnitContainer(
         random: ran,
         ctx: ctx,
+        size: size,
       );
     });
     return containers;
@@ -234,15 +251,16 @@ class FocusTrainState extends State<FocusTrain> {
         List<UnitContainer>.generate(pow(size, 2), (int index) {
       String str;
 
-      if(pool.length == 1){
+      if (pool.length == 1) {
         str = pool.first;
-      }else{
+      } else {
         str = pool[Random.secure().nextInt(pool.length - 1)];
       }
       pool.remove(str);
       return UnitContainer(
         str: str,
         ctx: ctx,
+        size: size,
       );
     });
     return containers;
@@ -251,9 +269,10 @@ class FocusTrainState extends State<FocusTrain> {
 
 class UnitContainer extends StatefulWidget {
   final int random;
+  final int size;
   final String str;
   final GameCtx ctx;
-  UnitContainer({this.random, this.str, this.ctx}) : super();
+  UnitContainer({this.random, this.str, this.ctx,this.size}) : super();
   @override
   _UnitContainerState createState() => _UnitContainerState();
 }
@@ -264,9 +283,11 @@ class _UnitContainerState extends State<UnitContainer> {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Color(0xFFa2a2a2), width: 1),
+          color: Colors.white,
+          // border: Border.all(color: Color(0xFFa2a2a2), width: 1),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Expanded(
                 child: FlatButton(
@@ -277,9 +298,9 @@ class _UnitContainerState extends State<UnitContainer> {
                         : widget.str)
                     : '',
                 style: TextStyle(
-                    fontSize: widget.ctx == GameCtx.ctxNum ? 13 : 16,
+                    fontSize: widget.ctx == GameCtx.ctxNum && widget.size >6 ?22 : 32,
                     color: Colors.black),
-                textAlign: TextAlign.center,
+                //textAlign: TextAlign.center,
               ),
               onPressed: _punchUnit,
             ))

@@ -100,29 +100,45 @@ class ContentContainor extends StatelessWidget {
                           children: <Widget>[
                             Align(
                               alignment: Alignment(0, 0.5),
-                              child: ContentExtentView(ctx: ctx, range: range, mode: mode),
+                              child: ContentExtentView(
+                                  ctx: ctx, range: range, mode: mode),
                             ),
                             Align(
-                              alignment: Alignment(0.8, 0.9),
-                              child:FlatButton(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Image.asset('images/icon_back.png'),
-                                  SizedBox(width: 10),
-                                  Text('返回',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          decoration: TextDecoration.none)),
-                                ],
+                              alignment: Alignment(0.9, 0.85),
+                              child: FlatButton(
+                                child: Container(
+                                    width: 120,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: const AssetImage(
+                                                'images/an_bg_n.png'),
+                                            fit: BoxFit.fill)),
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Container(
+                                              width: 14,
+                                              height: 14,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: const AssetImage(
+                                                          'images/an_back_w.png'),
+                                                      fit: BoxFit.fill))),
+                                          SizedBox(width: 10),
+                                          Text('返回',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.white))
+                                        ])),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
                               ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
                             )
                           ],
-                      ),
+                        ),
                       )
                     ],
                   ),

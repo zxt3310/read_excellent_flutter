@@ -38,7 +38,7 @@ void main() {
     try{
       int a = await platform.invokeMethod('getBgi');
       var bgiMan = BgiManager();
-      bgiMan.bgi = a==3?'第一张图':'第二张图';
+      bgiMan.bgi = a==0?'images/bg.png':'images/wood.png';
     }on PlatformException catch(e){
       print(e.message);
     }
@@ -71,7 +71,7 @@ class HomeView extends StatelessWidget {
       body: Container(
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: const AssetImage('images/bg.png'), fit: BoxFit.fill)),
+                  image: const AssetImage('images/wood.png'), fit: BoxFit.fill)),
           child: Row(
             children: <Widget>[
               Container(
@@ -94,7 +94,7 @@ class HomeView extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     TrainSuperButton(
-                      idx: 2,
+                      idx: 2, 
                       title: '视幅拓展训练',
                     ),
                     SizedBox(height: 20),
@@ -280,7 +280,8 @@ class _GameDetailViewState extends State<GameDetailView> {
             Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: Colors.white,
+                    //color: Colors.white,
+                    image: DecorationImage(image:const AssetImage('images/shortBg.jpg'),fit: BoxFit.fill),
                     border: Border.all(width: 12, color: Color(0xFFFF7720))),
                 width: MediaQuery.of(context).size.width / 3,
                 height: MediaQuery.of(context).size.height / 1.6,
@@ -309,6 +310,7 @@ class _GameDetailViewState extends State<GameDetailView> {
                   ),
                 )),
             SizedBox(height: 20),
+            superIdx==-1?Container() : 
             Expanded(
               child: Container(
                 child: Row(
@@ -609,6 +611,13 @@ class _FocusOptionState extends State<FocusOption> {
         ],
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    groupValue = _ShareInherit.of(context).gameSize - 3;
+    this.setState((){});
   }
 
   void changed(value) {
