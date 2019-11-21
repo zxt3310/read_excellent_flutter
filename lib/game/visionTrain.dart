@@ -6,7 +6,7 @@ import '../Tools/UIDefine.dart';
 import 'package:event_bus/event_bus.dart';
 
 EventBus eventBus = new EventBus();
-const int numberOfContent = 16; 
+const int numberOfContent = 24;
 
 class Vision extends StatefulWidget {
   final GamePath path;
@@ -21,15 +21,21 @@ class _VisionState extends State<Vision> {
   final GameMode mode;
   int cout = numberOfContent - 1;
   Timer _timer;
+  Timer _preTimer;
   //答案
   int answer = 0;
   //目标图形
   Widget target;
   List<Image> datalists;
-
+  //游戏准备状态
+  bool prepare = true;
+  List source;
   _VisionState(this.path, this.mode);
   @override
   Widget build(BuildContext context) {
+    if (prepare) {
+      source = _dataSource();
+    }
     return Scaffold(
         body: Container(
       decoration: BoxDecoration(
@@ -41,13 +47,31 @@ class _VisionState extends State<Vision> {
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
+              image: DecorationImage(
+                              image: AssetImage('images/shortBg.png'),
+                              fit: BoxFit.fill),
               border: Border.all(width: 12, color: const Color(0xFFFF7720))),
-          child: Stack(
-            children: _dataSource(),
-          ),
+          child: prepare
+              ? _preTipWid()
+              : Stack(
+                  children: source,
+                ),
         ),
       ),
     ));
+  }
+
+  Widget _preTipWid() {
+    return Container(
+        child: Center(
+            child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text('请观察', style: TextStyle(fontSize: 30)),
+        target,
+        Text('的出现次数', style: TextStyle(fontSize: 30))
+      ],
+    )));
   }
 
   List<Widget> _dataSource() {
@@ -61,6 +85,8 @@ class _VisionState extends State<Vision> {
       Image.asset('images/甜甜圈.png'),
       Image.asset('images/饼干.png')
     ];
+
+
     datalists = List.generate(numberOfContent, (int index) {
       return pics[Random.secure().nextInt(pics.length - 1)];
     });
@@ -72,42 +98,42 @@ class _VisionState extends State<Vision> {
       }
     }
     return List<Widget>.generate(numberOfContent, (int idx) {
-      double x; 
-      double y; 
+      double x;
+      double y;
 
       switch (widget.path) {
         case GamePath.pathN:
-          int a = idx%8;
+          int a = idx % 8;
           x = -0.75 + a ~/ 2 * 0.5;
-          y = (a % 2 == 0) ? -0.75 : 0.75;
+          y = (a % 2 == 0) ? -0.85 : 0.85;
           break;
         case GamePath.pathZ:
-          int a = idx%8;
-          x = (a % 2 == 0) ? -0.75 : 0.75;
+          int a = idx % 8;
+          x = (a % 2 == 0) ? -0.85 : 0.85;
           y = -0.75 + a ~/ 2 * 0.5;
           break;
         case GamePath.pathW:
-          int a = idx%9;
+          int a = idx % 9;
           x = -0.8 + a * 0.2;
-          y = (a % 2 == 0) ? -0.75 : 0.75;
+          y = (a % 2 == 0) ? -0.85 : 0.85;
           break;
         case GamePath.pathX:
-          int a = idx%8;
-          if (a%4<2){
+          int a = idx % 8;
+          if (a % 4 < 2) {
             x = -0.5 * pow(-1, idx);
-            y = -0.75 * pow(-1,idx);
-          }else{
-            x = -0.5 * pow(-1, idx+1);
-            y = 0.75 * pow(-1,idx+1);
+            y = -0.75 * pow(-1, idx);
+          } else {
+            x = -0.5 * pow(-1, idx + 1);
+            y = 0.75 * pow(-1, idx + 1);
           }
           break;
         case GamePath.pathO:
-          int i = idx%8;
-          if(i<4){
-            x = -0.8 + i*0.4;
+          int i = idx % 8;
+          if (i < 4) {
+            x = -0.8 + i * 0.4;
             y = -sqrt(0.65 - pow(x, 2));
-          }else{
-            x = 0.8 - (i-4)*0.4;
+          } else {
+            x = 0.8 - (i - 4) * 0.4;
             y = sqrt(0.65 - pow(x, 2));
           }
           break;
@@ -123,7 +149,7 @@ class _VisionState extends State<Vision> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _startGame();
+    _prepareGame();
   }
 
   StreamSubscription subscription;
@@ -133,6 +159,7 @@ class _VisionState extends State<Vision> {
     subscription = eventBus.on<ResetNotify>().listen((evnet) {
       this.setState(() {
         cout = numberOfContent - 1;
+        _prepareGame();
       });
     });
     super.initState();
@@ -141,12 +168,15 @@ class _VisionState extends State<Vision> {
   @override
   void setState(fn) {
     super.setState(fn);
-    _startGame();
+    if (!prepare) {
+      _startGame();
+    }
   }
 
   @override
   void dispose() {
     _timer.cancel();
+    _preTimer.cancel();
     subscription.cancel();
     super.dispose();
   }
@@ -154,6 +184,7 @@ class _VisionState extends State<Vision> {
   void _startGame() {
     var callBack = (Timer timer) {
       if (cout < -1) {
+        prepare = !prepare;
         timer.cancel();
         showDialog(
             barrierDismissible: false,
@@ -167,8 +198,19 @@ class _VisionState extends State<Vision> {
       }
     };
 
-    var oneSec = Duration(milliseconds: widget.mode.index*250 + 500);
+    var oneSec = Duration(milliseconds: widget.mode.index * 250 + 500);
     _timer = Timer.periodic(oneSec, callBack);
+  }
+
+  void _prepareGame() {
+    var callBack = (Timer tim) {
+      tim.cancel();
+      prepare = !prepare;
+      this.setState(() {});
+    };
+
+    var during = Duration(seconds: 2);
+    _preTimer = Timer.periodic(during, callBack);
   }
 }
 
@@ -247,15 +289,15 @@ class _QuestAnswerState extends State<_QuestAnswer> {
           margin: EdgeInsets.fromLTRB(30, 10, 30, 30),
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: const AssetImage('images/bg.png'), fit: BoxFit.fill)),
+                  image: const AssetImage('images/paper.png'), fit: BoxFit.fill)),
           child: Column(children: <Widget>[
-            SizedBox(height: 30),
+            SizedBox(height: 110),
             target,
             SizedBox(
               height: 10,
             ),
             Text('请选择上面图形的出现次数',
-                style: TextStyle(fontSize: 20, color: Colors.white)),
+                style: TextStyle(fontSize: 25, color: Colors.black)),
             SizedBox(height: 30),
             Row(
               children: _getOptions(),
@@ -264,7 +306,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
             Offstage(
                 offstage: right,
                 child: Text('回答错误',
-                    style: TextStyle(fontSize: 18, color: Colors.red))),
+                    style: TextStyle(fontSize: 20, color: Colors.red))),
             Expanded(
               child: Stack(children: [
                 Align(
@@ -278,20 +320,21 @@ class _QuestAnswerState extends State<_QuestAnswer> {
                                 image: const AssetImage('images/an_bg_n.png'),
                                 fit: BoxFit.fill)),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                          Container(
-                            width: 14,
-                            height: 14,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: const AssetImage('images/an_back_w.png'),
-                                fit: BoxFit.fill))),
-                          SizedBox(width: 10),
-                          Text('返回',
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.white))
-                        ])),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                  width: 14,
+                                  height: 14,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: const AssetImage(
+                                              'images/an_back_w.png'),
+                                          fit: BoxFit.fill))),
+                              SizedBox(width: 10),
+                              Text('返回',
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.white))
+                            ])),
                     onPressed: () {
                       Navigator.of(context).pop();
                       Navigator.of(ctxx).pop();
@@ -327,7 +370,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
         groupValue: groupValue,
         title: Text(
           '${childrens[idx]}',
-          style: TextStyle(fontSize: 14, color: Colors.white),
+          style: TextStyle(fontSize: 25, color: Colors.black),
         ),
         onChanged: (value) {
           this.setState(() {

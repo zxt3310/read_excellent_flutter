@@ -10,7 +10,8 @@ enum GameCtx {
   ctxNum,     //数字
   ctxStr,     //文字
   ctxGraphic,      //图形
-  ctxGraphicUnion //单一图形
+  ctxGraphicUnion, //单一图形
+  ctxArtical  //文章
 }
 
 enum GamePath {

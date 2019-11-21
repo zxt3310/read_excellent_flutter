@@ -18,7 +18,7 @@ EventBus eventBus = EventBus();
 const List menu = [
   ['数字舒尔特表格训练', '文字舒尔特表格训练'],
   ['数字感知训练', '中文感知训练', '第一图形感知训练', '多图形感知训练'],
-  ['矩形扩展训练', '圆形扩展训练', '数字扩展训练', '文字扩展训练'],
+  ['矩形扩展训练', '圆形扩展训练', '数字扩展训练', '文字扩展训练', '短文扩展训练'],
   ['N字形移动训练', '之字形移动训练', '波浪移动训练', '交叉移动训练', '圆形移动训练']
 ];
 
@@ -34,15 +34,16 @@ void main() {
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
-  Future <void> _getBgi() async {
-    try{
+  Future<void> _getBgi() async {
+    try {
       int a = await platform.invokeMethod('getBgi');
       var bgiMan = BgiManager();
-      bgiMan.bgi = a==0?'images/bg.png':'images/wood.png';
-    }on PlatformException catch(e){
+      bgiMan.bgi = a == 0 ? 'images/bg.png' : 'images/wood.png';
+    } on PlatformException catch (e) {
       print(e.message);
     }
   }
+
   _getBgi();
   runApp(MyApp());
 }
@@ -53,7 +54,6 @@ class MyApp extends StatelessWidget {
     return _ShareInherit(
         child: MaterialApp(
       title: 'Flutter Demo',
-      
       theme: ThemeData(
         primarySwatch: Colors.blue,
         unselectedWidgetColor: const Color(0xFFFF7720),
@@ -71,7 +71,8 @@ class HomeView extends StatelessWidget {
       body: Container(
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: const AssetImage('images/wood.png'), fit: BoxFit.fill)),
+                  image: const AssetImage('images/wood.png'),
+                  fit: BoxFit.fill)),
           child: Row(
             children: <Widget>[
               Container(
@@ -94,7 +95,7 @@ class HomeView extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     TrainSuperButton(
-                      idx: 2, 
+                      idx: 2,
                       title: '视幅拓展训练',
                     ),
                     SizedBox(height: 20),
@@ -171,6 +172,12 @@ class _TrainSuperButtonState extends State<TrainSuperButton> {
 
   void _btnPress() {
     eventBus.fire(SuperSelEvent(widget.idx));
+
+    int modeId = _ShareInherit.of(context).gameSize;
+    eventBus
+        .fire(ChildSelEvent(childIdx: 0, subIdx: widget.idx, modeIdx: modeId));
+    _ShareInherit.of(context).superIdx = widget.idx;
+    _ShareInherit.of(context).childIdx = 0;
   }
 
   StreamSubscription subscription;
@@ -264,24 +271,30 @@ class _GameDetailViewState extends State<GameDetailView> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Image.asset('images/icon_back.png'),
-                    SizedBox(width: 10),
-                    Text('返回',
-                        style: TextStyle(
-                            fontSize: 14, decoration: TextDecoration.none)),
+                    Container(
+                        width: 20,
+                        height: 20,
+                        child: Image.asset('images/an_back_w.png')),
+                    SizedBox(width: 5),
+                    Text('返 回',
+                        style: TextStyle(fontSize: 20, color: Colors.white)),
                   ],
                 ),
                 onPressed: () {
                   //Navigator.of(context).pop();
                   platform.invokeMethod('popRoute');
+                  eventBus
+                      .fire(ChildSelEvent(subIdx: -1, childIdx: 0, modeIdx: 0));
+                  eventBus.fire(SuperSelEvent(-1));
                 },
               )
             ]),
             Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    //color: Colors.white,
-                    image: DecorationImage(image:const AssetImage('images/shortBg.jpg'),fit: BoxFit.fill),
+                    image: DecorationImage(
+                        image: const AssetImage('images/shortBg.png'),
+                        fit: BoxFit.fill),
                     border: Border.all(width: 12, color: Color(0xFFFF7720))),
                 width: MediaQuery.of(context).size.width / 3,
                 height: MediaQuery.of(context).size.height / 1.6,
@@ -290,12 +303,12 @@ class _GameDetailViewState extends State<GameDetailView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       superIdx == -1
-                      ?SizedBox(height: 0)
-                      :Text(_scribe(),
-                          style: TextStyle(
-                              fontSize: 36,
-                              color: Colors.black,
-                              decoration: TextDecoration.none)),
+                          ? SizedBox(height: 0)
+                          : Text(_scribe(),
+                              style: TextStyle(
+                                  fontSize: 36,
+                                  color: Colors.black,
+                                  decoration: TextDecoration.none)),
                       superIdx == 2 && childIdx > 1
                           ? ContentExtentOptionWidget()
                           : Container(
@@ -310,43 +323,45 @@ class _GameDetailViewState extends State<GameDetailView> {
                   ),
                 )),
             SizedBox(height: 20),
-            superIdx==-1?Container() : 
-            Expanded(
-              child: Container(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Flexible(
-                      flex: 3,
-                      child: superIdx > 0 ? ModeOption() : FocusOption(),
+            superIdx == -1
+                ? Container()
+                : Expanded(
+                    child: Container(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Flexible(
+                            flex: 3,
+                            child: superIdx > 0 ? ModeOption() : FocusOption(),
+                          ),
+                          Expanded(
+                              flex: 2,
+                              child: Container(
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                    FlatButton(
+                                      child: Container(
+                                          width: 162,
+                                          height: 70,
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  image: const AssetImage(
+                                                      'images/an_bg_n.png'),
+                                                  fit: BoxFit.fill)),
+                                          child: Center(
+                                              child: Text('开始',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.white)))),
+                                      onPressed: _startGame,
+                                    )
+                                  ])))
+                        ],
+                      ),
                     ),
-                    Expanded(
-                        flex: 2,
-                        child: Container(
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                              FlatButton(
-                                child: Container(
-                                    width: 162,
-                                    height: 70,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: const AssetImage(
-                                                'images/an_bg_n.png'),
-                                            fit: BoxFit.fill)),
-                                    child: Center(
-                                        child: Text('开始',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.white)))),
-                                onPressed: _startGame,
-                              )
-                            ])))
-                  ],
-                ),
-              ),
-            )
+                  )
           ],
         ),
       )),
@@ -435,11 +450,17 @@ class _GameDetailViewState extends State<GameDetailView> {
     int contentSize = _ShareInherit.of(context).contentSize;
 
     GameAssistant helper = GameAssistant(
-        childIdx: chilIdx, superIdx: supIdx, mode: mode, gameSize: size,contentSize: contentSize);
+        childIdx: chilIdx,
+        superIdx: supIdx,
+        mode: mode,
+        gameSize: size,
+        contentSize: contentSize);
 
     print(helper.getTargetGame());
+    // Navigator.of(context).push(MaterialPageRoute(
+    //     builder: (BuildContext context) => helper.getTargetGame()));
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => helper.getTargetGame()));
+        builder: (BuildContext context) => GamePrepare(filter: helper)));
   }
 
   StreamSubscription subscription;
@@ -617,7 +638,7 @@ class _FocusOptionState extends State<FocusOption> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     groupValue = _ShareInherit.of(context).gameSize - 3;
-    this.setState((){});
+    this.setState(() {});
   }
 
   void changed(value) {
@@ -627,9 +648,9 @@ class _FocusOptionState extends State<FocusOption> {
     int cid = _ShareInherit.of(context).childIdx;
     eventBus.fire(ChildSelEvent(childIdx: cid, subIdx: 0, modeIdx: value + 3));
   }
+
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 }
@@ -697,7 +718,12 @@ class GameAssistant {
 
   final int contentSize;
 
-  GameAssistant({this.superIdx, this.childIdx, this.gameSize, this.mode,this.contentSize});
+  GameAssistant(
+      {this.superIdx,
+      this.childIdx,
+      this.gameSize,
+      this.mode,
+      this.contentSize});
 
   Widget getTargetGame() {
     Widget wid;
@@ -736,10 +762,16 @@ class GameAssistant {
             wid = VistaTrain(shape: RectShape.shapeCycle, mode: mode);
             break;
           case 2:
-            wid = ContentContainor(ctx: GameCtx.ctxNum, range: contentSize, mode: mode);
+            wid = ContentContainor(
+                ctx: GameCtx.ctxNum, range: contentSize, mode: mode);
             break;
           case 3:
-            wid = ContentContainor(ctx: GameCtx.ctxStr, range: contentSize, mode: mode);
+            wid = ContentContainor(
+                ctx: GameCtx.ctxStr, range: contentSize, mode: mode);
+            break;
+          case 4:
+            wid = ContentContainor(
+                ctx: GameCtx.ctxArtical, range: contentSize, mode: mode);
             break;
           default:
             wid = VistaTrain(
@@ -800,19 +832,18 @@ class ContentExtentOptionWidget extends StatefulWidget {
 class _ContentExtentOptionWidgetState extends State<ContentExtentOptionWidget> {
   @override
   Widget build(BuildContext context) {
-    return 
-        Container(
-          //padding: EdgeInsets.all(20),
-          width: 600,
-          height: 220,
-            child: Wrap(
-      alignment: WrapAlignment.start,
-      spacing: 30,
-      runSpacing: 0,
-      crossAxisAlignment: WrapCrossAlignment.start,
-      direction: Axis.vertical,
-      children: _getOptions(),
-    ));
+    return Container(
+        //padding: EdgeInsets.all(20),
+        width: 650,
+        height: 220,
+        child: Wrap(
+          alignment: WrapAlignment.start,
+          spacing: 25,
+          runSpacing: 0,
+          crossAxisAlignment: WrapCrossAlignment.start,
+          direction: Axis.vertical,
+          children: _getOptions(),
+        ));
   }
 
   int groupValue = 4;
@@ -820,12 +851,12 @@ class _ContentExtentOptionWidgetState extends State<ContentExtentOptionWidget> {
   List<Widget> _getOptions() {
     return List.generate(options.length, (idx) {
       return Container(
-          width: 200,
+          width: 210,
           height: 40,
           child: RadioListTile(
               activeColor: const Color(0xFFFF7720),
               title: Text(options[idx],
-                  style: TextStyle(fontSize: 18, color: Colors.black)),
+                  style: TextStyle(fontSize: 20, color: Colors.black)),
               value: idx + 4,
               groupValue: groupValue,
               onChanged: (value) {
@@ -834,5 +865,92 @@ class _ContentExtentOptionWidgetState extends State<ContentExtentOptionWidget> {
                 this.setState(() {});
               }));
     });
+  }
+}
+
+//倒计时页面
+
+class GamePrepare extends StatelessWidget {
+  final GameAssistant filter;
+  const GamePrepare({Key key, this.filter}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: const AssetImage('images/bg.png'),
+                    fit: BoxFit.fill)),
+            child: Padding(
+                padding: const EdgeInsets.all(50),
+                child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                            width: 12, color: const Color(0xFFFF7720))),
+                    child: TimerWidget(filter: filter)))));
+  }
+}
+
+class TimerWidget extends StatefulWidget {
+  final GameAssistant filter;
+  TimerWidget({Key key, this.filter}) : super(key: key);
+
+  @override
+  _TimerWidgetState createState() => _TimerWidgetState();
+}
+
+class _TimerWidgetState extends State<TimerWidget> {
+  int count = 3;
+  Timer timer;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('images/shortBg.png'), fit: BoxFit.fill)),
+        child: Center(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            Text('倒计时',style:TextStyle(fontSize: 80,color:Colors.white)),
+            Text('$count',
+                style: TextStyle(
+                    fontSize: 140,
+                    color: Colors.white,
+                    decoration: TextDecoration.none))
+          ]),
+        ));
+  }
+
+  startCount() {
+    var callBack = (tim) {
+      if (count == 1) {
+        timer.cancel();
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    widget.filter.getTargetGame()));
+      } else {
+        count--;
+        this.setState(() {});
+      }
+    };
+
+    var sec = Duration(seconds: 1);
+    timer = Timer.periodic(sec, callBack);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    this.startCount();
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 }

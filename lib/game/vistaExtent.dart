@@ -18,6 +18,9 @@ class VistaTrain extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                              image: AssetImage('images/shortBg.png'),
+                              fit: BoxFit.fill),
                 border: Border.all(width: 12, color: const Color(0xFFFF7720))),
             child: Stack(
               children: <Widget>[
@@ -82,7 +85,7 @@ class _VistaRectState extends State<VistaRect> {
         height: dr,
         decoration: dr > 20
             ? BoxDecoration(
-                border: Border.all(width: 2, color: Color(0xFFFF7720)),
+                border: Border.all(width: 6, color: Colors.white),
                 borderRadius: widget.shape == RectShape.shapeCycle
                     ? BorderRadius.circular(dr / 2)
                     : BorderRadius.circular(0))

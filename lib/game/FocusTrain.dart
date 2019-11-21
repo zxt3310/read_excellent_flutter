@@ -9,11 +9,11 @@ import '../Tools/UIDefine.dart';
 
 const List<String> words = [
   '可',
-  '壤',
+  '品',
   '露',
   '央',
-  '籍',
-  '攀',
+  '团',
+  '爬',
   '然',
   '理',
   '接',
@@ -23,55 +23,55 @@ const List<String> words = [
   '本',
   '心',
   '熟',
-  '衡',
-  '融',
+  '横',
+  '荣',
   '甲',
   '乃',
   '与',
-  '凝',
   '同',
-  '繁',
-  '躁',
+  '京',
+  '开',
   '国',
   '年',
   '如',
   '十',
   '个',
-  '蠡',
-  '黯',
-  '矗',
-  '灝',
+  '遇',
+  '吃',
+  '福',
+  '乐',
   '昧',
   '眨',
-  '仔',
+  '有',
   '白',
   '题',
   '篇',
   '入',
+  '邻',
   '卜',
   '点',
-  '俪',
+  '明',
   '总',
   '揽',
   '亲',
   '言',
-  '覆',
+  '倾',
   '圭',
   '达',
   '训',
   '各',
   '考',
-  '馕',
+  '学',
   '得',
-  '颧',
-  '霾',
+  '权',
+  '博',
   '贺',
-  '籍',
-  '蹲',
-  '麓',
-  '徙',
-  '瞭',
-  '黔'
+  '途',
+  '淘',
+  '鸽',
+  '爱',
+  '笔',
+  '海'
 ];
 
 class FocusTrain extends StatefulWidget {
@@ -119,6 +119,9 @@ class FocusTrainState extends State<FocusTrain> {
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
+                            image: DecorationImage(
+                                image: AssetImage('images/shortBg.png'),
+                                fit: BoxFit.fill),
                             border: Border.all(
                                 width: 12, color: const Color(0xFFFF7720))),
                         child: Stack(children: <Widget>[
@@ -128,7 +131,7 @@ class FocusTrainState extends State<FocusTrain> {
                             children: <Widget>[
                               Text('$numInfo',
                                   style: TextStyle(
-                                      fontSize: 14, color: Color(0xFF5b5b5b))),
+                                      fontSize: 20, color: Colors.black)),
                               Offstage(
                                   offstage: ctx == GameCtx.ctxNum,
                                   child: Padding(
@@ -136,10 +139,9 @@ class FocusTrainState extends State<FocusTrain> {
                                           EdgeInsets.fromLTRB(30, 5, 30, 0),
                                       child: Text('$rules',
                                           style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 20,
                                               color: Colors.black)))),
                               Container(
-                                color: Colors.black,
                                 width:
                                     MediaQuery.of(context).size.height * 0.65,
                                 height:
@@ -272,7 +274,7 @@ class UnitContainer extends StatefulWidget {
   final int size;
   final String str;
   final GameCtx ctx;
-  UnitContainer({this.random, this.str, this.ctx,this.size}) : super();
+  UnitContainer({this.random, this.str, this.ctx, this.size}) : super();
   @override
   _UnitContainerState createState() => _UnitContainerState();
 }
@@ -283,8 +285,8 @@ class _UnitContainerState extends State<UnitContainer> {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          // border: Border.all(color: Color(0xFFa2a2a2), width: 1),
+          //color: Colors.white,
+          border: Border.all(color: Colors.white, width: 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -298,7 +300,9 @@ class _UnitContainerState extends State<UnitContainer> {
                         : widget.str)
                     : '',
                 style: TextStyle(
-                    fontSize: widget.ctx == GameCtx.ctxNum && widget.size >6 ?22 : 32,
+                    fontSize: widget.ctx == GameCtx.ctxNum && widget.size > 6
+                        ? 20
+                        : 32,
                     color: Colors.black),
                 //textAlign: TextAlign.center,
               ),

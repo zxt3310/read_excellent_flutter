@@ -114,6 +114,9 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                              image: AssetImage('images/shortBg.png'),
+                              fit: BoxFit.fill),
                           border: Border.all(
                               width: 12, color: const Color(0xFFFF7720))),
                       child: Stack(children: _getDataSource()),
@@ -147,15 +150,17 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
       return Align(
         alignment: Alignment(top, left), //AlignmentDirectional(0.8, -0.8),
         child: Container(
-          width: 40,
-          height: 40,
+          width: 50,
+          height: 50,
           child: Center(
             child: (widget.content == GameCtx.ctxGraphic ||
                     widget.content == GameCtx.ctxGraphicUnion)
                 ? source[idx]
                 : Text('${source[idx]}',
                     style: TextStyle(
-                        fontSize: 18, decoration: TextDecoration.none)),
+                        fontSize: 25,
+                        decoration: TextDecoration.none,
+                        color: Colors.white)),
           ),
         ),
       );
@@ -244,12 +249,12 @@ class _QuestAnswerState extends State<_QuestAnswer> {
           margin: EdgeInsets.fromLTRB(30, 10, 30, 30),
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: const AssetImage('images/bg.png'), fit: BoxFit.fill)),
+                  image: const AssetImage('images/paper.png'), fit: BoxFit.fill)),
           child: Column(children: <Widget>[
-            SizedBox(height: 50),
+            SizedBox(height: 170),
             Text(_queStr(),
-                style: TextStyle(fontSize: 20, color: Colors.white)),
-            SizedBox(height: 30),
+                style: TextStyle(fontSize: 28, color: Colors.black)),
+            SizedBox(height: 60),
             Row(
               children: _getOptions(),
             ),
@@ -257,7 +262,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
             Offstage(
                 offstage: right,
                 child: Text('回答错误',
-                    style: TextStyle(fontSize: 18, color: Colors.red))),
+                    style: TextStyle(fontSize: 20, color: Colors.red))),
             Expanded(
               child: Stack(children: [
                 Align(
@@ -335,7 +340,7 @@ class _QuestAnswerState extends State<_QuestAnswer> {
         groupValue: groupValue,
         title: Text(
           '${childrens[idx]}',
-          style: TextStyle(fontSize: 14, color: Colors.white),
+          style: TextStyle(fontSize: 25, color: Colors.black),
         ),
         onChanged: (value) {
           this.setState(() {
