@@ -912,14 +912,17 @@ class _TimerWidgetState extends State<TimerWidget> {
             image: DecorationImage(
                 image: AssetImage('images/shortBg.png'), fit: BoxFit.fill)),
         child: Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-            Text('倒计时',style:TextStyle(fontSize: 80,color:Colors.white)),
-            Text('$count',
-                style: TextStyle(
-                    fontSize: 140,
-                    color: Colors.white,
-                    decoration: TextDecoration.none))
-          ]),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('倒计时',
+                    style: TextStyle(fontSize: 80, color: Colors.white)),
+                Text('$count',
+                    style: TextStyle(
+                        fontSize: 140,
+                        color: Colors.white,
+                        decoration: TextDecoration.none))
+              ]),
         ));
   }
 

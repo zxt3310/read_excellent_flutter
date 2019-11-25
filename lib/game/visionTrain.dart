@@ -48,8 +48,7 @@ class _VisionState extends State<Vision> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
               image: DecorationImage(
-                              image: AssetImage('images/shortBg.png'),
-                              fit: BoxFit.fill),
+                  image: AssetImage('images/shortBg.png'), fit: BoxFit.fill),
               border: Border.all(width: 12, color: const Color(0xFFFF7720))),
           child: prepare
               ? _preTipWid()
@@ -86,7 +85,6 @@ class _VisionState extends State<Vision> {
       Image.asset('images/饼干.png')
     ];
 
-
     datalists = List.generate(numberOfContent, (int index) {
       return pics[Random.secure().nextInt(pics.length - 1)];
     });
@@ -97,7 +95,7 @@ class _VisionState extends State<Vision> {
         answer++;
       }
     }
-    return List<Widget>.generate(numberOfContent, (int idx) {
+    List array = List<Widget>.generate(numberOfContent, (int idx) {
       double x;
       double y;
 
@@ -144,6 +142,41 @@ class _VisionState extends State<Vision> {
           child: _UnitView(icon: datalists[idx], index: idx),
           alignment: Alignment(x, y));
     });
+
+    array.add(_getBackBtn());
+    return array;
+  }
+
+  Widget _getBackBtn() {
+    return Align(
+      alignment: Alignment(0.98, 0.98),
+      child: FlatButton(
+        child: Container(
+            width: 100,
+            height: 40,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: const AssetImage('images/an_bg_n.png'),
+                    fit: BoxFit.fill)),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                      width: 14,
+                      height: 14,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: const AssetImage('images/an_back_w.png'),
+                              fit: BoxFit.fill))),
+                  SizedBox(width: 10),
+                  Text('返回',
+                      style: TextStyle(fontSize: 14, color: Colors.white))
+                ])),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
+    );
   }
 
   @override
@@ -289,7 +322,8 @@ class _QuestAnswerState extends State<_QuestAnswer> {
           margin: EdgeInsets.fromLTRB(30, 10, 30, 30),
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: const AssetImage('images/paper.png'), fit: BoxFit.fill)),
+                  image: const AssetImage('images/paper.png'),
+                  fit: BoxFit.fill)),
           child: Column(children: <Widget>[
             SizedBox(height: 110),
             target,

@@ -175,8 +175,8 @@ class _ContentExtentViewState extends State<ContentExtentView> {
             ? Text('')
             : Text(contentStr(),
                 style: TextStyle(
-                    fontSize: 35,
-                    color: Colors.black,
+                    fontSize: 40,
+                    color: Colors.white,
                     decoration: TextDecoration.none)),
       ),
     );

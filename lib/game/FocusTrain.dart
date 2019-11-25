@@ -4,6 +4,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
+//import 'dart:io';
 import 'package:flutter/material.dart';
 import '../Tools/UIDefine.dart';
 
@@ -284,8 +285,8 @@ class _UnitContainerState extends State<UnitContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
+        padding: EdgeInsets.all(0),
         decoration: BoxDecoration(
-          //color: Colors.white,
           border: Border.all(color: Colors.white, width: 1),
         ),
         child: Column(
@@ -293,6 +294,7 @@ class _UnitContainerState extends State<UnitContainer> {
           children: <Widget>[
             Expanded(
                 child: FlatButton(
+                  padding: EdgeInsets.all(0),
               child: Text(
                 visable
                     ? ((widget.ctx == GameCtx.ctxNum)
@@ -300,9 +302,10 @@ class _UnitContainerState extends State<UnitContainer> {
                         : widget.str)
                     : '',
                 style: TextStyle(
-                    fontSize: widget.ctx == GameCtx.ctxNum && widget.size > 6
-                        ? 20
-                        : 32,
+                    // fontSize: widget.ctx == GameCtx.ctxNum && widget.size > 6
+                    //     ? 32
+                    //     : 32,
+                    fontSize:28,//Platform.isAndroid?28:32,
                     color: Colors.black),
                 //textAlign: TextAlign.center,
               ),
