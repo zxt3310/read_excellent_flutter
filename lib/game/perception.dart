@@ -159,7 +159,7 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
 
       // double top = Random.secure().nextDouble() * 2 - 1; //* (height- 20);
       // double left = Random.secure().nextDouble() * 2 - 1; //* (width - 40);
-
+      if(idx == lenth - 1) pointList = List();
       return Align(
         alignment:
             Alignment(point.y, point.x), //AlignmentDirectional(0.8, -0.8),
@@ -185,56 +185,19 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
   AlignPoint _makePoint() {
     AlignPoint point = AlignPoint();
     if (pointList.isNotEmpty) {
-      List <AlignPoint> fault = pointList.where((t) => ((t.x - point.x).abs() < 50 / (MediaQuery.of(context).size.width - 100)) && ((t.y - point.y).abs() < 50 / (MediaQuery.of(context).size.height - 100)));
-      if (fault.isNotEmpty) {
+      var fault = pointList.any((t) =>
+          ((t.x - point.x).abs() <
+              60 / (MediaQuery.of(context).size.width / 2 - 50)) &&
+          ((t.y - point.y).abs() <
+              60 / (MediaQuery.of(context).size.height / 2 - 50)));
+      if (fault) {
+        print('递归+1');
         point = _makePoint();
       }
     }
     pointList.add(point);
     return point;
-  
   }
-
-  // List<Align> RmRp(List<Align> target,List source) {
-  //   int i = 0;
-  //   do {
-  //     Align unit = target[i];
-  //     Align next = target[i + 1];
-  //     Alignment a1 = unit.alignment;
-  //     Alignment a2 = next.alignment;
-  //     if ((a1.x - a2.x).abs() < 50 / MediaQuery.of(context).size.width - 100 &&
-  //         (a1.y - a2.y).abs() <
-  //             50 / MediaQuery.of(context).size.height - 100) {
-
-  //               double top = Random.secure().nextDouble() * 2 - 1; //* (height- 20);
-  //               double left = Random.secure().nextDouble() * 2 - 1; //* (width - 40);
-
-  //               Align newone = Align(
-  //                 alignment: Alignment(top, left), //AlignmentDirectional(0.8, -0.8),
-  //                 child: Container(
-  //                   width: 50,
-  //                   height: 50,
-  //                   child: Center(
-  //                     child: (widget.content == GameCtx.ctxGraphic ||
-  //                             widget.content == GameCtx.ctxGraphicUnion)
-  //                         ? source[i]
-  //                         : Text('${source[i]}',
-  //                             style: TextStyle(
-  //                                 fontSize: 25,
-  //                                 decoration: TextDecoration.none,
-  //                                 color: Colors.white)),
-  //                   ),
-  //                 ),
-  //               );
-
-  //               target.replaceRange(i, i+1, newone);
-  //             }
-
-  //     i++;
-  //   } while (i == target.length - 2);
-
-  //   return target;
-  // }
 
   @override
   void dispose() {
