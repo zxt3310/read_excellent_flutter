@@ -833,8 +833,7 @@ class _ContentExtentOptionWidgetState extends State<ContentExtentOptionWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        //padding: EdgeInsets.all(20),
-        width: 650,
+        //width: 630,
         height: 220,
         child: Wrap(
           alignment: WrapAlignment.start,
@@ -854,6 +853,7 @@ class _ContentExtentOptionWidgetState extends State<ContentExtentOptionWidget> {
           width: 210,
           height: 40,
           child: RadioListTile(
+              dense: true,
               activeColor: const Color(0xFFFF7720),
               title: Text(options[idx],
                   style: TextStyle(fontSize: 20, color: Colors.black)),

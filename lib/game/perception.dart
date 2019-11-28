@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:event_bus/event_bus.dart';
+import 'package:flutter/material.dart' as prefix0;
 
 ///感知训练
 import '../Tools/UIDefine.dart';
@@ -79,6 +80,16 @@ List<String> words = [
 
 EventBus eventBus = new EventBus();
 
+class AlignPoint {
+  double x;
+  double y;
+
+  AlignPoint() {
+    x = Random.secure().nextDouble() * 2 - 1;
+    y = Random.secure().nextDouble() * 2 - 1;
+  }
+}
+
 class PerceptionTrain extends StatefulWidget {
   final GameMode mode;
   final GameCtx content;
@@ -144,11 +155,14 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
     });
 
     return List.generate(lenth, (int idx) {
-      double top = Random.secure().nextDouble() * 2 - 1; //* (height- 20);
-      double left = Random.secure().nextDouble() * 2 - 1; //* (width - 40);
+      AlignPoint point = _makePoint(); //AlignPoint();
+
+      // double top = Random.secure().nextDouble() * 2 - 1; //* (height- 20);
+      // double left = Random.secure().nextDouble() * 2 - 1; //* (width - 40);
 
       return Align(
-        alignment: Alignment(top, left), //AlignmentDirectional(0.8, -0.8),
+        alignment:
+            Alignment(point.y, point.x), //AlignmentDirectional(0.8, -0.8),
         child: Container(
           width: 50,
           height: 50,
@@ -166,6 +180,61 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
       );
     });
   }
+
+  List<AlignPoint> pointList = List();
+  AlignPoint _makePoint() {
+    AlignPoint point = AlignPoint();
+    if (pointList.isNotEmpty) {
+      List <AlignPoint> fault = pointList.where((t) => ((t.x - point.x).abs() < 50 / (MediaQuery.of(context).size.width - 100)) && ((t.y - point.y).abs() < 50 / (MediaQuery.of(context).size.height - 100)));
+      if (fault.isNotEmpty) {
+        point = _makePoint();
+      }
+    }
+    pointList.add(point);
+    return point;
+  
+  }
+
+  // List<Align> RmRp(List<Align> target,List source) {
+  //   int i = 0;
+  //   do {
+  //     Align unit = target[i];
+  //     Align next = target[i + 1];
+  //     Alignment a1 = unit.alignment;
+  //     Alignment a2 = next.alignment;
+  //     if ((a1.x - a2.x).abs() < 50 / MediaQuery.of(context).size.width - 100 &&
+  //         (a1.y - a2.y).abs() <
+  //             50 / MediaQuery.of(context).size.height - 100) {
+
+  //               double top = Random.secure().nextDouble() * 2 - 1; //* (height- 20);
+  //               double left = Random.secure().nextDouble() * 2 - 1; //* (width - 40);
+
+  //               Align newone = Align(
+  //                 alignment: Alignment(top, left), //AlignmentDirectional(0.8, -0.8),
+  //                 child: Container(
+  //                   width: 50,
+  //                   height: 50,
+  //                   child: Center(
+  //                     child: (widget.content == GameCtx.ctxGraphic ||
+  //                             widget.content == GameCtx.ctxGraphicUnion)
+  //                         ? source[i]
+  //                         : Text('${source[i]}',
+  //                             style: TextStyle(
+  //                                 fontSize: 25,
+  //                                 decoration: TextDecoration.none,
+  //                                 color: Colors.white)),
+  //                   ),
+  //                 ),
+  //               );
+
+  //               target.replaceRange(i, i+1, newone);
+  //             }
+
+  //     i++;
+  //   } while (i == target.length - 2);
+
+  //   return target;
+  // }
 
   @override
   void dispose() {
@@ -249,7 +318,8 @@ class _QuestAnswerState extends State<_QuestAnswer> {
           margin: EdgeInsets.fromLTRB(30, 10, 30, 30),
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: const AssetImage('images/paper.png'), fit: BoxFit.fill)),
+                  image: const AssetImage('images/paper.png'),
+                  fit: BoxFit.fill)),
           child: Column(children: <Widget>[
             SizedBox(height: 170),
             Text(_queStr(),
