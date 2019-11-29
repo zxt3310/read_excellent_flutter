@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../Tools/UIDefine.dart';
 
 class VistaTrain extends StatelessWidget {
@@ -73,8 +74,8 @@ class VistaRect extends StatefulWidget {
 }
 
 class _VistaRectState extends State<VistaRect> {
-  double dr = 20;
-  double cdr = 20;
+  double dr = ScreenUtil().setHeight(20);
+  double cdr = ScreenUtil().setHeight(20);
   Timer _timer;
   int count = 1;
   @override
@@ -83,7 +84,7 @@ class _VistaRectState extends State<VistaRect> {
     return Container(
         width: dr,
         height: dr,
-        decoration: dr > 20
+        decoration: dr > ScreenUtil().setHeight(20)
             ? BoxDecoration(
                 border: Border.all(width: 6, color: Colors.white),
                 borderRadius: widget.shape == RectShape.shapeCycle
@@ -109,7 +110,7 @@ class _VistaRectState extends State<VistaRect> {
         count = 1;
         this.setState(() {});
       } else {
-        dr = count * 7.5 * cdr;
+        dr = count * 8 * cdr;
         count += 1;
         this.setState(() {});
       }

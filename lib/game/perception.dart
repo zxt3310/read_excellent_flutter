@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:math';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:event_bus/event_bus.dart';
-import 'package:flutter/material.dart' as prefix0;
-
 ///感知训练
 import '../Tools/UIDefine.dart';
 import 'package:flutter/material.dart';
@@ -157,8 +155,6 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
     return List.generate(lenth, (int idx) {
       AlignPoint point = _makePoint(); //AlignPoint();
 
-      // double top = Random.secure().nextDouble() * 2 - 1; //* (height- 20);
-      // double left = Random.secure().nextDouble() * 2 - 1; //* (width - 40);
       if(idx == lenth - 1) pointList = List();
       return Align(
         alignment:
@@ -191,7 +187,6 @@ class _PerceptionTrainState extends State<PerceptionTrain> {
           ((t.y - point.y).abs() <
               60 / (MediaQuery.of(context).size.height / 2 - 50)));
       if (fault) {
-        print('递归+1');
         point = _makePoint();
       }
     }
@@ -284,14 +279,14 @@ class _QuestAnswerState extends State<_QuestAnswer> {
                   image: const AssetImage('images/paper.png'),
                   fit: BoxFit.fill)),
           child: Column(children: <Widget>[
-            SizedBox(height: 170),
+            SizedBox(height: ScreenUtil().setHeight(170)),
             Text(_queStr(),
                 style: TextStyle(fontSize: 28, color: Colors.black)),
-            SizedBox(height: 60),
+            SizedBox(height: ScreenUtil().setHeight(60)),
             Row(
               children: _getOptions(),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: ScreenUtil().setHeight(30)),
             Offstage(
                 offstage: right,
                 child: Text('回答错误',

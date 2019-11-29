@@ -1,5 +1,4 @@
 
-
 enum GameMode {
   modeFast,    //快
   modeNormal,  //普通

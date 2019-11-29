@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../Tools/UIDefine.dart';
 import 'package:event_bus/event_bus.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 EventBus eventBus = new EventBus();
 const int numberOfContent = 24;
@@ -325,18 +326,18 @@ class _QuestAnswerState extends State<_QuestAnswer> {
                   image: const AssetImage('images/paper.png'),
                   fit: BoxFit.fill)),
           child: Column(children: <Widget>[
-            SizedBox(height: 110),
+            SizedBox(height: ScreenUtil().setHeight(110)),
             target,
             SizedBox(
-              height: 10,
+              height: ScreenUtil().setHeight(10),
             ),
             Text('请选择上面图形的出现次数',
                 style: TextStyle(fontSize: 25, color: Colors.black)),
-            SizedBox(height: 30),
+            SizedBox(height: ScreenUtil().setHeight(30)),
             Row(
               children: _getOptions(),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: ScreenUtil().setHeight(30)),
             Offstage(
                 offstage: right,
                 child: Text('回答错误',

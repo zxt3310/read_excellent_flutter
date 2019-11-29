@@ -1,6 +1,6 @@
 /// 专注训练
 ///
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
@@ -115,7 +115,7 @@ class FocusTrainState extends State<FocusTrain> {
                         image: const AssetImage('images/bg.png'),
                         fit: BoxFit.fill)),
                 child: Container(
-                    padding: EdgeInsets.all(30),
+                    padding: EdgeInsets.all(ScreenUtil().setHeight(30)),
                     child: Container(
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -132,7 +132,7 @@ class FocusTrainState extends State<FocusTrain> {
                             children: <Widget>[
                               Text('$numInfo',
                                   style: TextStyle(
-                                      fontSize: 20, color: Colors.black)),
+                                      fontSize: ScreenUtil().setSp(20), color: Colors.black)),
                               Offstage(
                                   offstage: ctx == GameCtx.ctxNum,
                                   child: Padding(
@@ -140,7 +140,7 @@ class FocusTrainState extends State<FocusTrain> {
                                           EdgeInsets.fromLTRB(30, 5, 30, 0),
                                       child: Text('$rules',
                                           style: TextStyle(
-                                              fontSize: 20,
+                                              fontSize: ScreenUtil().setSp(18),
                                               color: Colors.black)))),
                               Container(
                                 width:
@@ -155,7 +155,7 @@ class FocusTrainState extends State<FocusTrain> {
                                     crossAxisCount: size,
                                     children: _datasource),
                               ),
-                              SizedBox(height: 5),
+                              SizedBox(height: ScreenUtil().setHeight(5)),
                               CountDownTimer(_timeLimit())
                             ],
                           ),
@@ -163,8 +163,8 @@ class FocusTrainState extends State<FocusTrain> {
                             alignment: Alignment(0.95, 0.95),
                             child: FlatButton(
                               child: Container(
-                                  width: 120,
-                                  height: 50,
+                                  width: ScreenUtil().setHeight(120),
+                                  height: ScreenUtil().setHeight(50),
                                   decoration: BoxDecoration(
                                       image: DecorationImage(
                                           image: const AssetImage(
@@ -175,8 +175,8 @@ class FocusTrainState extends State<FocusTrain> {
                                           MainAxisAlignment.center,
                                       children: <Widget>[
                                         Container(
-                                            width: 14,
-                                            height: 14,
+                                            width: ScreenUtil().setHeight(14),
+                                            height: ScreenUtil().setHeight(14),
                                             decoration: BoxDecoration(
                                                 image: DecorationImage(
                                                     image: const AssetImage(
@@ -185,7 +185,7 @@ class FocusTrainState extends State<FocusTrain> {
                                         SizedBox(width: 10),
                                         Text('返回',
                                             style: TextStyle(
-                                                fontSize: 14,
+                                                fontSize: ScreenUtil().setSp(14),
                                                 color: Colors.white))
                                       ])),
                               onPressed: () {
@@ -305,7 +305,7 @@ class _UnitContainerState extends State<UnitContainer> {
                     // fontSize: widget.ctx == GameCtx.ctxNum && widget.size > 6
                     //     ? 32
                     //     : 32,
-                    fontSize:28,//Platform.isAndroid?28:32,
+                    fontSize:ScreenUtil().setSp(28),//Platform.isAndroid?28:32,
                     color: Colors.black),
                 //textAlign: TextAlign.center,
               ),
